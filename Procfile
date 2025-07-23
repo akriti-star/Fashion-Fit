@@ -1,1 +1,1 @@
-web: gunicorn FashionFit.wsgi
+web: gunicorn fashionfit.wsgi
