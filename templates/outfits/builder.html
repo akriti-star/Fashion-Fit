@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+
+{% block title %}Outfit Builder - FashionFit{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Outfit Builder</h1>
+            <p class="text-gray-600">Create your perfect outfit by selecting products from our collection</p>
+        </div>
+
+        <form method="post" class="mb-8">
+            {% csrf_token %}
+            
+            <!-- Outfit Name Input -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-semibold mb-4">Outfit Details</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="outfit_name" class="block text-sm font-medium text-gray-700 mb-2">
+                            Outfit Name *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="outfit_name" 
+                            name="outfit_name" 
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                            placeholder="Enter outfit name"
+                        >
+                    </div>
+                    <div class="flex items-center">
+                        <input 
+                            type="checkbox" 
+                            id="is_public" 
+                            name="is_public" 
+                            class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                        >
+                        <label for="is_public" class="ml-2 block text-sm text-gray-700">
+                            Make this outfit public
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Selection -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">Build Your Outfit</h2>
+                
+                <!-- Selected Products Display -->
+                <div id="selected-products" class="mb-6 p-4 border-2 border-dashed border-gray-300 rounded-lg min-h-32">
+                    <h3 class="text-lg font-medium mb-4">Your Outfit Preview</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
+                        <div id="selected-top" class="outfit-slot" data-category="top">
+                            <div class="h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+                                Select Top
+                            </div>
+                        </div>
+                        <div id="selected-bottom" class="outfit-slot" data-category="bottom">
+                            <div class="h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+                                Select Bottom
+                            </div>
+                        </div>
+                        <div id="selected-dress" class="outfit-slot" data-category="dress">
+                            <div class="h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+                                Select Dress
+                            </div>
+                        </div>
+                        <div id="selected-outerwear" class="outfit-slot" data-category="outerwear">
+                            <div class="h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+                                Select Outerwear
+                            </div>
+                        </div>
+                        <div id="selected-shoes" class="outfit-slot" data-category="shoes">
+                            <div class="h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+                                Select Shoes
+                            </div>
+                        </div>
+                        <div id="selected-accessories" class="outfit-slot" data-category="accessories">
+                            <div class="h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+                                Select Accessories
+                            </div>
+                        </div>
+                    </div>
+                    <div id="total-price" class="text-right font-bold text-lg text-primary">
+                        Total: $0.00
+                    </div>
+                </div>
+
+                <!-- Category Tabs -->
+                <div class="mb-6">
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <button type="button" class="category-tab active bg-primary text-white px-4 py-2 rounded-lg" data-category="top">
+                            Tops
+                        </button>
+                        <button type="button" class="category-tab bg-gray-200 text-gray-700 px-4 py-2 rounded-lg" data-category="bottom">
+                            Bottoms
+                        </button>
+                        <button type="button" class="category-tab bg-gray-200 text-gray-700 px-4 py-2 rounded-lg" data-category="dress">
+                            Dresses
+                        </button>
+                        <button type="button" class="category-tab bg-gray-200 text-gray-700 px-4 py-2 rounded-lg" data-category="outerwear">
+                            Outerwear
+                        </button>
+                        <button type="button" class="category-tab bg-gray-200 text-gray-700 px-4 py-2 rounded-lg" data-category="shoes">
+                            Shoes
+                        </button>
+                        <button type="button" class="category-tab bg-gray-200 text-gray-700 px-4 py-2 rounded-lg" data-category="accessories">
+                            Accessories
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Products Grid by Category -->
+                {% for category, category_display in categories %}
+                    <div class="category-products {% if category != 'top' %}hidden{% endif %}" data-category="{{ category }}">
+                        <h3 class="text-lg font-semibold mb-4">{{ category_display }}</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {% for product in products %}
+                                {% if product.category == category %}
+                                    <div class="product-card bg-gray-50 rounded-lg p-4 border hover:shadow-md transition-shadow cursor-pointer" 
+                                         data-product-id="{{ product.id }}" 
+                                         data-category="{{ product.category }}"
+                                         data-price="{{ product.price }}"
+                                         data-title="{{ product.title }}">
+                                        <div class="relative mb-3">
+                                            {% if product.image %}
+                                                <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-full h-32 object-cover rounded-md">
+                                            {% else %}
+                                                <div class="w-full h-32 bg-gray-200 rounded-md flex items-center justify-center">
+                                                    <span class="text-gray-500">No Image</span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <h3 class="font-semibold text-sm mb-1">{{ product.title }}</h3>
+                                        <p class="text-gray-600 text-sm mb-2">{{ product.get_category_display }}</p>
+                                        <p class="text-primary font-bold text-sm mb-3">${{ product.price }}</p>
+                                        <input 
+                                            type="checkbox" 
+                                            name="products" 
+                                            value="{{ product.id }}"
+                                            class="product-checkbox hidden"
+                                        >
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                <div class="col-span-full text-center py-8">
+                                    <p class="text-gray-500">No products available in this category</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <!-- Submit Button -->
+                <div class="mt-6 text-center">
+                    <button 
+                        type="submit" 
+                        id="create-outfit-btn"
+                        class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium disabled:opacity-50"
+                        disabled
+                    >
+                        Create Outfit
+                    </button>
+                    <p class="text-sm text-gray-500 mt-2">Select at least one product to create an outfit</p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryTabs = document.querySelectorAll('.category-tab');
+    const categoryProducts = document.querySelectorAll('.category-products');
+    const productCards = document.querySelectorAll('.product-card');
+    const outfitSlots = document.querySelectorAll('.outfit-slot');
+    const totalPriceElement = document.getElementById('total-price');
+    const createOutfitBtn = document.getElementById('create-outfit-btn');
+    
+    let selectedProducts = {};
+    let totalPrice = 0;
+    
+    // Category tab switching
+    categoryTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const category = this.dataset.category;
+            
+            // Update active tab
+            categoryTabs.forEach(t => t.classList.remove('active', 'bg-primary', 'text-white'));
+            categoryTabs.forEach(t => t.classList.add('bg-gray-200', 'text-gray-700'));
+            this.classList.add('active', 'bg-primary', 'text-white');
+            this.classList.remove('bg-gray-200', 'text-gray-700');
+            
+            // Show corresponding products
+            categoryProducts.forEach(cp => cp.classList.add('hidden'));
+            document.querySelector(`[data-category="${category}"].category-products`).classList.remove('hidden');
+        });
+    });
+    
+    // Product selection
+    productCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const category = this.dataset.category;
+            const price = parseFloat(this.dataset.price);
+            const title = this.dataset.title;
+            const checkbox = this.querySelector('.product-checkbox');
+            const image = this.querySelector('img') || this.querySelector('.bg-gray-200');
+            
+            // For dress category, clear top and bottom selections
+            if (category === 'dress') {
+                if (selectedProducts['top']) {
+                    removeProductFromOutfit('top');
+                }
+                if (selectedProducts['bottom']) {
+                    removeProductFromOutfit('bottom');
+                }
+            }
+            
+            // For top/bottom, clear dress selection
+            if (category === 'top' || category === 'bottom') {
+                if (selectedProducts['dress']) {
+                    removeProductFromOutfit('dress');
+                }
+            }
+            
+            // Toggle product selection
+            if (selectedProducts[category] && selectedProducts[category].id === productId) {
+                // Deselect current product
+                removeProductFromOutfit(category);
+            } else {
+                // Select new product (replace if category already has selection)
+                if (selectedProducts[category]) {
+                    removeProductFromOutfit(category);
+                }
+                
+                selectedProducts[category] = {
+                    id: productId,
+                    price: price,
+                    title: title,
+                    element: this
+                };
+                
+                checkbox.checked = true;
+                this.classList.add('ring-2', 'ring-primary');
+                
+                // Update outfit slot
+                const slot = document.getElementById(`selected-${category}`);
+                if (image.src) {
+                    slot.innerHTML = `
+                        <img src="${image.src}" alt="${title}" class="w-full h-24 object-cover rounded-lg">
+                        <p class="text-xs mt-1 text-center">${title}</p>
+                    `;
+                } else {
+                    slot.innerHTML = `
+                        <div class="w-full h-24 bg-primary bg-opacity-20 rounded-lg flex items-center justify-center">
+                            <span class="text-primary text-xs text-center">${title}</span>
+                        </div>
+                    `;
+                }
+                
+                totalPrice += price;
+            }
+            
+            updateTotalPrice();
+            updateCreateButton();
+        });
+    });
+    
+    function removeProductFromOutfit(category) {
+        if (selectedProducts[category]) {
+            const product = selectedProducts[category];
+            const checkbox = product.element.querySelector('.product-checkbox');
+            
+            checkbox.checked = false;
+            product.element.classList.remove('ring-2', 'ring-primary');
+            
+            totalPrice -= product.price;
+            delete selectedProducts[category];
+            
+            // Reset outfit slot
+            const slot = document.getElementById(`selected-${category}`);
+            slot.innerHTML = `
+                <div class="h-24 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+                    Select ${category.charAt(0).toUpperCase() + category.slice(1)}
+                </div>
+            `;
+        }
+    }
+    
+    function updateTotalPrice() {
+        totalPriceElement.textContent = `Total: $${totalPrice.toFixed(2)}`;
+    }
+    
+    function updateCreateButton() {
+        const hasProducts = Object.keys(selectedProducts).length > 0;
+        createOutfitBtn.disabled = !hasProducts;
+    }
+});
+</script>
+
+{% endblock %}

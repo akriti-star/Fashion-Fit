@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+    <h2 class="text-2xl font-bold text-center mb-6">Create Your FashionFit Account</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Basic Information -->
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Basic Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.first_name.id_for_label }}" class="block text-gray-700 font-semibold mb-2">First Name</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.first_name.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.last_name.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Last Name</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.last_name.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Type Selection -->
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Profile Type</h3>
+            
+            <!-- Simple rendering test -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">{{ form.user_type.label }}</label>
+                
+                <!-- Radio button 1 -->
+                <div class="mb-3">
+                    <label class="flex items-center">
+                        <input type="radio" name="user_type" value="buyer" required class="mr-3">
+                        <div>
+                            <div class="font-medium text-gray-900">
+                                <i class="fas fa-shopping-bag text-blue-600 mr-2"></i>Buyer Only
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                Perfect for customers who want to discover and purchase fashion products with personalized size recommendations.
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                
+                <!-- Radio button 2 -->
+                <div class="mb-3">
+                    <label class="flex items-center">
+                        <input type="radio" name="user_type" value="seller" required class="mr-3">
+                        <div>
+                            <div class="font-medium text-gray-900">
+                                <i class="fas fa-store text-green-600 mr-2"></i>Seller Only
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                Ideal for fashion entrepreneurs who want to showcase and sell their products to customers.
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                
+                <!-- Radio button 3 -->
+                <div class="mb-3">
+                    <label class="flex items-center">
+                        <input type="radio" name="user_type" value="both" required class="mr-3">
+                        <div>
+                            <div class="font-medium text-gray-900">
+                                <i class="fas fa-users text-purple-600 mr-2"></i>Both Buyer & Seller
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                Great for users who want to both shop for products and sell their own fashion items.
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            
+            {% if form.user_type.errors %}
+                <div class="text-red-500 text-sm mt-2">{{ form.user_type.errors }}</div>
+            {% endif %}
+            {% if form.user_type.help_text %}
+                <div class="text-gray-500 text-sm mt-2">{{ form.user_type.help_text }}</div>
+            {% endif %}
+        </div>
+        
+        <!-- Business Information (for sellers) -->
+        <div class="mb-6" id="business-info">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Business Information <span class="text-sm font-normal text-gray-600">(Required for seller profiles)</span></h3>
+            <div class="grid grid-cols-1 gap-4">
+                <div>
+                    <label for="{{ form.business_name.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Business Name</label>
+                    {{ form.business_name }}
+                    {% if form.business_name.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.business_name.errors }}</div>
+                    {% endif %}
+                    {% if form.business_name.help_text %}
+                        <div class="text-gray-500 text-sm mt-1">{{ form.business_name.help_text }}</div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.business_description.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Business Description</label>
+                    {{ form.business_description }}
+                    {% if form.business_description.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.business_description.errors }}</div>
+                    {% endif %}
+                    {% if form.business_description.help_text %}
+                        <div class="text-gray-500 text-sm mt-1">{{ form.business_description.help_text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Password Fields -->
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Security</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Password</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.password1.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Confirm Password</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.password2.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Non-field errors -->
+        {% if form.non_field_errors %}
+            <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <button type="submit" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
+            Create Account
+        </button>
+    </form>
+    
+    <div class="text-center mt-6">
+        <p class="text-gray-600">Already have an account? 
+            <a href="{% url 'accounts:login' %}" class="text-primary hover:text-purple-700">Sign in</a>
+        </p>
+    </div>
+</div>
+
+<!-- JavaScript to show/hide business info based on selection -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const userTypeRadios = document.querySelectorAll('input[name="user_type"]');
+    const businessInfo = document.getElementById('business-info');
+    
+    function toggleBusinessInfo() {
+        const selectedType = document.querySelector('input[name="user_type"]:checked');
+        if (selectedType && (selectedType.value === 'seller' || selectedType.value === 'both')) {
+            businessInfo.style.display = 'block';
+        } else {
+            businessInfo.style.display = 'none';
+        }
+    }
+    
+    userTypeRadios.forEach(radio => {
+        radio.addEventListener('change', toggleBusinessInfo);
+    });
+    
+    // Initial check
+    toggleBusinessInfo();
+});
+</script>
+{% endblock %}

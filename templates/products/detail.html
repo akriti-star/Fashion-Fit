@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.title }} - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Product Images -->
+        <div class="space-y-4">
+            <div class="aspect-w-3 aspect-h-4">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-full h-96 object-cover rounded-lg">
+                {% else %}
+                    <div class="w-full h-96 bg-gray-200 flex items-center justify-center rounded-lg">
+                        <i class="fas fa-image text-gray-400 text-6xl"></i>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Virtual Try-On Button -->
+            <div class="bg-gradient-to-r from-myntra-pink to-myntra-pink-dark p-4 rounded-lg">
+                {% if user.is_authenticated %}
+                <a href="{% url 'core:try_on' product.pk %}" class="block w-full bg-white text-myntra-pink py-4 rounded-sm text-center font-bold text-lg hover:bg-myntra-light transition-colors duration-300 no-underline shadow-sm">
+                    <i class="fas fa-camera mr-2"></i>Try On Virtually
+                </a>
+                <p class="text-white text-sm text-center mt-2 opacity-90">
+                    <i class="fas fa-magic mr-1"></i>See how it looks on you instantly!
+                </p>
+                {% else %}
+                <a href="{% url 'accounts:login' %}?next={% url 'core:try_on' product.pk %}" class="block w-full bg-white text-myntra-pink py-4 rounded-sm text-center font-bold text-lg hover:bg-myntra-light transition-colors duration-300 no-underline shadow-sm">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login to Try On
+                </a>
+                <p class="text-white text-sm text-center mt-2 opacity-90">
+                    <i class="fas fa-info-circle mr-1"></i>Virtual try-on available after login
+                </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="space-y-6">
+            <div>
+                <h1 class="text-3xl font-bold mb-2">{{ product.title }}</h1>
+                <p class="text-gray-600 capitalize">{{ product.category }}</p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <span class="text-3xl font-bold text-primary">${{ product.price }}</span>
+                <div class="flex items-center">
+                    <div class="flex text-yellow-400 mr-2">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= product.get_average_rating %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="text-gray-600">({{ product.get_review_count }} reviews)</span>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-semibold mb-2">Description</h3>
+                <p class="text-gray-700">{{ product.description }}</p>
+            </div>
+
+            <!-- Size Recommendation -->
+            {% if user.is_authenticated %}
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="font-semibold mb-2 text-blue-800">Smart Size Recommendation</h3>
+                {% if user.has_body_measurements %}
+                    <p class="text-blue-700 mb-2">
+                        <i class="fas fa-magic mr-2"></i>
+                        Based on your measurements, we recommend size: 
+                        <span class="font-bold text-lg">{{ user.get_recommended_size }}</span>
+                    </p>
+                    <p class="text-sm text-blue-600">
+                        This recommendation is based on your body measurements and our sizing algorithm.
+                    </p>
+                {% else %}
+                    <p class="text-blue-700 mb-2">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Add your body measurements to get personalized size recommendations!
+                    </p>
+                    <a href="{% url 'accounts:profile' %}" class="text-blue-600 hover:text-blue-800 font-medium">
+                        Update Profile →
+                    </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Size Chart -->
+            {% if product.size_chart %}
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold mb-3">Size Chart</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="text-left py-2">Size</th>
+                                <th class="text-left py-2">Chest</th>
+                                <th class="text-left py-2">Waist</th>
+                                <th class="text-left py-2">Hip</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="py-2">XS</td>
+                                <td class="py-2">{{ product.size_chart.xs_chest }}"</td>
+                                <td class="py-2">{{ product.size_chart.xs_waist }}"</td>
+                                <td class="py-2">{{ product.size_chart.xs_hip }}"</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-2">S</td>
+                                <td class="py-2">{{ product.size_chart.s_chest }}"</td>
+                                <td class="py-2">{{ product.size_chart.s_waist }}"</td>
+                                <td class="py-2">{{ product.size_chart.s_hip }}"</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-2">M</td>
+                                <td class="py-2">{{ product.size_chart.m_chest }}"</td>
+                                <td class="py-2">{{ product.size_chart.m_waist }}"</td>
+                                <td class="py-2">{{ product.size_chart.m_hip }}"</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-2">L</td>
+                                <td class="py-2">{{ product.size_chart.l_chest }}"</td>
+                                <td class="py-2">{{ product.size_chart.l_waist }}"</td>
+                                <td class="py-2">{{ product.size_chart.l_hip }}"</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2">XL</td>
+                                <td class="py-2">{{ product.size_chart.xl_chest }}"</td>
+                                <td class="py-2">{{ product.size_chart.xl_waist }}"</td>
+                                <td class="py-2">{{ product.size_chart.xl_hip }}"</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-4">
+                {% if user.is_authenticated %}
+                <a href="{% url 'core:add_to_wishlist' product.pk %}" class="flex-1 bg-pink-500 text-white py-3 rounded-lg text-center font-semibold hover:bg-pink-600 transition">
+                    <i class="fas fa-heart mr-2"></i>Add to Wishlist
+                </a>
+                <a href="{% url 'outfits:create' %}?product={{ product.pk }}" class="flex-1 bg-green-500 text-white py-3 rounded-lg text-center font-semibold hover:bg-green-600 transition">
+                    <i class="fas fa-plus mr-2"></i>Add to Outfit
+                </a>
+                {% else %}
+                <a href="{% url 'accounts:login' %}" class="flex-1 bg-primary text-white py-3 rounded-lg text-center font-semibold hover:bg-purple-700 transition">
+                    Login to Add to Wishlist
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="mt-12">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Customer Reviews</h2>
+            {% if user.is_authenticated %}
+            <a href="{% url 'reviews:create' product.pk %}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                Write a Review
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="space-y-6">
+            {% for review in reviews %}
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
+                            {{ review.user.username|first|upper }}
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">{{ review.user.username }}</h4>
+                            <p class="text-gray-600 text-sm">{{ review.created_at|date:"M d, Y" }}</p>
+                        </div>
+                    </div>
+                    <div class="flex text-yellow-400">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.overall_rating %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <p class="text-gray-700 mb-4">{{ review.comment }}</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <span class="font-medium">Fit:</span>
+                        <div class="flex text-yellow-400 text-xs">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.fit_rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div>
+                        <span class="font-medium">Quality:</span>
+                        <div class="flex text-yellow-400 text-xs">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.quality_rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div>
+                        <span class="font-medium">Comfort:</span>
+                        <div class="flex text-yellow-400 text-xs">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.comfort_rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div>
+                        <span class="font-medium">Style:</span>
+                        <div class="flex text-yellow-400 text-xs">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.style_rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-12">
+                <i class="fas fa-star text-gray-400 text-6xl mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-600 mb-2">No reviews yet</h3>
+                <p class="text-gray-500">Be the first to review this product!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Virtual Try-On Modal -->
+<div id="tryOnModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 relative">
+        <!-- Close button -->
+        <button onclick="closeTryOnModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="p-8 text-center">
+            <!-- Icon -->
+            <div class="w-16 h-16 bg-myntra-pink rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-camera text-white text-2xl"></i>
+            </div>
+            
+            <!-- Title -->
+            <h3 class="text-2xl font-bold text-myntra-dark mb-3">Try This On Virtually!</h3>
+            
+            <!-- Description -->
+            <p class="text-myntra-gray mb-6">Want to see how this {{ product.category|lower }} looks on you? Use our virtual try-on feature to visualize the fit before purchasing!</p>
+            
+            <!-- Buttons -->
+            <div class="space-y-3">
+                {% if user.is_authenticated %}
+                <a href="{% url 'core:try_on' product.pk %}" class="block w-full bg-myntra-pink text-white py-3 rounded-sm font-semibold hover:bg-myntra-pink-dark transition-colors duration-300 no-underline">
+                    <i class="fas fa-camera mr-2"></i>Yes, Try It On!
+                </a>
+                <button onclick="closeTryOnModal()" class="block w-full bg-gray-200 text-myntra-dark py-3 rounded-sm font-semibold hover:bg-gray-300 transition-colors duration-300">
+                    Maybe Later
+                </button>
+                {% else %}
+                <a href="{% url 'accounts:login' %}?next={% url 'core:try_on' product.pk %}" class="block w-full bg-myntra-pink text-white py-3 rounded-sm font-semibold hover:bg-myntra-pink-dark transition-colors duration-300 no-underline">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login & Try On
+                </a>
+                <button onclick="closeTryOnModal()" class="block w-full bg-gray-200 text-myntra-dark py-3 rounded-sm font-semibold hover:bg-gray-300 transition-colors duration-300">
+                    Continue Browsing
+                </button>
+                {% endif %}
+            </div>
+            
+            <!-- Note -->
+            <p class="text-sm text-myntra-gray mt-4">
+                <i class="fas fa-info-circle mr-1"></i>
+                Virtual try-on helps you make better purchasing decisions
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+function showTryOnModal() {
+    document.getElementById('tryOnModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closeTryOnModal() {
+    document.getElementById('tryOnModal').classList.add('hidden');
+    document.body.style.overflow = 'auto'; // Restore scrolling
+    
+    // Set a cookie to remember user dismissed the modal
+    setCookie('tryOnModalDismissed_{{ product.pk }}', 'true', 7); // Remember for 7 days
+}
+
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+// Show modal after page loads (with delay) if not dismissed before
+window.addEventListener('load', function() {
+    // Check if user has dismissed this modal for this product before
+    if (!getCookie('tryOnModalDismissed_{{ product.pk }}')) {
+        // Show modal after 3 seconds
+        setTimeout(function() {
+            showTryOnModal();
+        }, 3000);
+    }
+});
+
+// Optional: Show modal when user scrolls down (alternative trigger)
+window.addEventListener('scroll', function() {
+    if (window.scrollY > 300 && !getCookie('tryOnModalDismissed_{{ product.pk }}')) {
+        // Only show once per session
+        if (!sessionStorage.getItem('tryOnModalShown_{{ product.pk }}')) {
+            showTryOnModal();
+            sessionStorage.setItem('tryOnModalShown_{{ product.pk }}', 'true');
+        }
+    }
+});
+</script>
+{% endblock %}

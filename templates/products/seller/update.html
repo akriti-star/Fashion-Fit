@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Product - {{ object.title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Edit Product</h1>
+            <p class="text-gray-600">Update the details for "{{ object.title }}"</p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <div>
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Product Title *
+                    </label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Category *
+                        </label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="text-red-600 text-sm mt-1">{{ form.category.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.price.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Price ($) *
+                        </label>
+                        {{ form.price }}
+                        {% if form.price.errors %}
+                            <div class="text-red-600 text-sm mt-1">{{ form.price.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Description *
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.description.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Product Image
+                    </label>
+                    
+                    {% if object.image %}
+                        <div class="mb-4">
+                            <p class="text-sm text-gray-600 mb-2">Current image:</p>
+                            <img src="{{ object.image.url }}" alt="{{ object.title }}" class="w-32 h-32 object-cover rounded-lg border">
+                        </div>
+                    {% endif %}
+                    
+                    {{ form.image }}
+                    <p class="text-sm text-gray-500 mt-1">Upload a new image to replace the current one (max 5MB). Supported formats: JPG, PNG, WEBP</p>
+                    {% if form.image.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.image.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="{{ form.color.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Color
+                        </label>
+                        {{ form.color }}
+                        {% if form.color.errors %}
+                            <div class="text-red-600 text-sm mt-1">{{ form.color.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.material.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Material
+                        </label>
+                        {{ form.material }}
+                        {% if form.material.errors %}
+                            <div class="text-red-600 text-sm mt-1">{{ form.material.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.brand.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Brand
+                        </label>
+                        {{ form.brand }}
+                        {% if form.brand.errors %}
+                            <div class="text-red-600 text-sm mt-1">{{ form.brand.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    {{ form.is_active }}
+                    <label for="{{ form.is_active.id_for_label }}" class="ml-2 text-sm font-medium text-gray-700">
+                        Make this product active (visible to customers)
+                    </label>
+                </div>
+
+                <div class="flex space-x-4 pt-4">
+                    <button type="submit" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg">
+                        <i class="fas fa-save mr-2"></i>Update Product
+                    </button>
+                    <a href="{% url 'products:seller_list' %}" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg text-center">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

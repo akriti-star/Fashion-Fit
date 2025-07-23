@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Help Center - FashionFit{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-primary to-purple-700 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Help Center</h1>
+                <p class="text-xl text-purple-100 max-w-2xl mx-auto">
+                    Find answers to your questions and get the help you need
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Search Bar -->
+        <div class="mb-12">
+            <div class="max-w-2xl mx-auto">
+                <div class="relative">
+                    <input type="text" placeholder="Search for help..." class="w-full px-6 py-4 pr-12 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm">
+                    <button class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Help Categories -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow cursor-pointer">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shopping-cart text-blue-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Orders & Shipping</h3>
+                <p class="text-gray-600 text-sm">Track orders, shipping info, and delivery</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow cursor-pointer">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-undo text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Returns & Refunds</h3>
+                <p class="text-gray-600 text-sm">Return policy and refund process</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow cursor-pointer">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user text-purple-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Account & Profile</h3>
+                <p class="text-gray-600 text-sm">Manage your account and settings</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow cursor-pointer">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-camera text-orange-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Virtual Try-On</h3>
+                <p class="text-gray-600 text-sm">How to use our AR try-on feature</p>
+            </div>
+        </div>
+
+        <!-- FAQ Sections -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- General FAQ -->
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+                
+                <div class="space-y-4">
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="flex justify-between items-center w-full text-left font-semibold text-gray-900 py-2 faq-toggle">
+                            <span>How do I place an order?</span>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                        </button>
+                        <div class="faq-content hidden mt-2 text-gray-600">
+                            <p>To place an order, simply browse our products, add items to your cart, and proceed to checkout. You'll need to create an account or sign in to complete your purchase.</p>
+                        </div>
+                    </div>
+
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="flex justify-between items-center w-full text-left font-semibold text-gray-900 py-2 faq-toggle">
+                            <span>What payment methods do you accept?</span>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                        </button>
+                        <div class="faq-content hidden mt-2 text-gray-600">
+                            <p>We accept all major credit cards (Visa, MasterCard, American Express), PayPal, Apple Pay, and Google Pay for secure transactions.</p>
+                        </div>
+                    </div>
+
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="flex justify-between items-center w-full text-left font-semibold text-gray-900 py-2 faq-toggle">
+                            <span>How does the Virtual Try-On work?</span>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                        </button>
+                        <div class="faq-content hidden mt-2 text-gray-600">
+                            <p>Our Virtual Try-On uses advanced AR technology. Simply click the "Try On" button on any product, allow camera access, and see how the clothing looks on you in real-time.</p>
+                        </div>
+                    </div>
+
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="flex justify-between items-center w-full text-left font-semibold text-gray-900 py-2 faq-toggle">
+                            <span>What is your return policy?</span>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                        </button>
+                        <div class="faq-content hidden mt-2 text-gray-600">
+                            <p>We offer a 30-day return policy for unworn items with original tags. Returns are free for orders over $50. Visit our Returns page for detailed instructions.</p>
+                        </div>
+                    </div>
+
+                    <div class="border-b border-gray-200 pb-4">
+                        <button class="flex justify-between items-center w-full text-left font-semibold text-gray-900 py-2 faq-toggle">
+                            <span>How can I track my order?</span>
+                            <i class="fas fa-chevron-down text-gray-400 transform transition-transform"></i>
+                        </button>
+                        <div class="faq-content hidden mt-2 text-gray-600">
+                            <p>Once your order ships, you'll receive a tracking number via email. You can also track your order by logging into your account and visiting the Orders section.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping & Returns -->
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold mb-6">Shipping & Returns</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3 text-green-600">
+                            <i class="fas fa-shipping-fast mr-2"></i>Shipping Information
+                        </h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>• Free shipping on orders over $50</li>
+                            <li>• Standard shipping: 3-5 business days</li>
+                            <li>• Express shipping: 1-2 business days</li>
+                            <li>• International shipping available</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3 text-blue-600">
+                            <i class="fas fa-undo mr-2"></i>Return Process
+                        </h3>
+                        <ol class="space-y-2 text-gray-600">
+                            <li>1. Log into your account</li>
+                            <li>2. Go to "My Orders" and select the item</li>
+                            <li>3. Click "Return Item" and follow instructions</li>
+                            <li>4. Print the prepaid return label</li>
+                            <li>5. Package and ship the item back</li>
+                        </ol>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3 text-purple-600">
+                            <i class="fas fa-money-bill-wave mr-2"></i>Refund Policy
+                        </h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>• Refunds processed within 5-7 business days</li>
+                            <li>• Original payment method will be credited</li>
+                            <li>• Shipping costs are non-refundable</li>
+                            <li>• Items must be in original condition</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Support -->
+        <div class="mt-12 bg-gradient-to-r from-primary to-purple-700 rounded-xl p-8 text-center">
+            <h2 class="text-2xl font-bold text-white mb-4">Still Need Help?</h2>
+            <p class="text-purple-100 mb-6">Our customer support team is here to assist you</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'core:contact' %}" class="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-envelope mr-2"></i>Contact Support
+                </a>
+                <a href="tel:+1555123456" class="bg-purple-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-900 transition-colors">
+                    <i class="fas fa-phone mr-2"></i>Call Us: (555) 123-4567
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Toggle Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const faqToggles = document.querySelectorAll('.faq-toggle');
+    
+    faqToggles.forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const icon = this.querySelector('i');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

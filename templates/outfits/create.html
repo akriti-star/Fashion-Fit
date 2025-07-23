@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Outfit - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-2">Create New Outfit</h1>
+        <p class="text-gray-600">Build your perfect outfit combination</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Outfit Form -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Outfit Details</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="id_name" class="block text-sm font-medium text-gray-700 mb-2">Outfit Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-6">
+                    <label for="id_products" class="block text-sm font-medium text-gray-700 mb-2">Select Products</label>
+                    {{ form.products }}
+                    {% if form.products.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.products.errors }}</div>
+                    {% endif %}
+                    <p class="text-sm text-gray-500 mt-1">Hold Ctrl (or Cmd) to select multiple products</p>
+                </div>
+
+                <div class="flex space-x-4">
+                    <button type="submit" class="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition">
+                        Create Outfit
+                    </button>
+                    <a href="{% url 'outfits:list' %}" class="flex-1 bg-gray-500 text-white py-2 px-4 rounded-lg text-center hover:bg-gray-600 transition">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Product Selection Helper -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Available Products</h2>
+            
+            <!-- Category Filter -->
+            <div class="mb-4">
+                <div class="flex flex-wrap gap-2">
+                    <button class="px-3 py-1 bg-primary text-white rounded-lg text-sm" onclick="filterProducts('all')">All</button>
+                    <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300" onclick="filterProducts('tops')">Tops</button>
+                    <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300" onclick="filterProducts('bottoms')">Bottoms</button>
+                    <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300" onclick="filterProducts('dresses')">Dresses</button>
+                    <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300" onclick="filterProducts('shoes')">Shoes</button>
+                    <button class="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300" onclick="filterProducts('accessories')">Accessories</button>
+                </div>
+            </div>
+
+            <div class="max-h-96 overflow-y-auto">
+                <div class="grid grid-cols-2 gap-4">
+                    {% for product in products %}
+                    <div class="product-item border rounded-lg p-3 hover:shadow-md transition cursor-pointer" data-category="{{ product.category }}" onclick="selectProduct({{ product.id }})">
+                        <div class="aspect-w-1 aspect-h-1 mb-2">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-full h-20 object-cover rounded">
+                            {% else %}
+                                <div class="w-full h-20 bg-gray-200 flex items-center justify-center rounded">
+                                    <i class="fas fa-image text-gray-400"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <h4 class="font-medium text-sm">{{ product.title }}</h4>
+                        <p class="text-xs text-gray-600">${{ product.price }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterProducts(category) {
+    const products = document.querySelectorAll('.product-item');
+    const buttons = document.querySelectorAll('button[onclick^="filterProducts"]');
+    
+    // Update button styles
+    buttons.forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-white');
+        btn.classList.add('bg-gray-200', 'text-gray-700');
+    });
+    event.target.classList.add('bg-primary', 'text-white');
+    event.target.classList.remove('bg-gray-200', 'text-gray-700');
+    
+    // Filter products
+    products.forEach(product => {
+        if (category === 'all' || product.dataset.category === category) {
+            product.style.display = 'block';
+        } else {
+            product.style.display = 'none';
+        }
+    });
+}
+
+function selectProduct(productId) {
+    const select = document.getElementById('id_products');
+    const option = select.querySelector(`option[value="${productId}"]`);
+    
+    if (option) {
+        option.selected = !option.selected;
+        
+        // Visual feedback
+        const productItem = document.querySelector(`[onclick="selectProduct(${productId})"]`);
+        if (option.selected) {
+            productItem.classList.add('ring-2', 'ring-purple-500', 'bg-purple-50');
+        } else {
+            productItem.classList.remove('ring-2', 'ring-purple-500', 'bg-purple-50');
+        }
+    }
+}
+
+// Initialize product selection states
+document.addEventListener('DOMContentLoaded', function() {
+    const select = document.getElementById('id_products');
+    const selectedOptions = Array.from(select.selectedOptions);
+    
+    selectedOptions.forEach(option => {
+        const productItem = document.querySelector(`[onclick="selectProduct(${option.value})"]`);
+        if (productItem) {
+            productItem.classList.add('ring-2', 'ring-purple-500', 'bg-purple-50');
+        }
+    });
+});
+</script>
+{% endblock %}

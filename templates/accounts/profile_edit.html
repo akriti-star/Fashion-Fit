@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+    <h2 class="text-2xl font-bold mb-6">Edit Profile</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Personal Information -->
+            <div class="col-span-2">
+                <h3 class="text-lg font-semibold mb-4">Personal Information</h3>
+            </div>
+            
+            <div>
+                <label for="{{ form.first_name.id_for_label }}" class="block text-gray-700 font-semibold mb-2">First Name</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.first_name.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.last_name.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Last Name</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.last_name.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="col-span-2">
+                <label for="{{ form.email.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.gender.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Gender</label>
+                {{ form.gender }}
+                {% if form.gender.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.gender.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.body_type.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Body Type</label>
+                {{ form.body_type }}
+                {% if form.body_type.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.body_type.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <!-- Body Measurements -->
+            <div class="col-span-2">
+                <h3 class="text-lg font-semibold mb-4 mt-6">Body Measurements</h3>
+                <p class="text-gray-600 text-sm mb-4">These measurements help us provide better size recommendations</p>
+            </div>
+            
+            <div>
+                <label for="{{ form.height_cm.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Height (cm)</label>
+                {{ form.height_cm }}
+                {% if form.height_cm.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.height_cm.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.weight_kg.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Weight (kg)</label>
+                {{ form.weight_kg }}
+                {% if form.weight_kg.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.weight_kg.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.chest_cm.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Chest (cm)</label>
+                {{ form.chest_cm }}
+                {% if form.chest_cm.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.chest_cm.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.waist_cm.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Waist (cm)</label>
+                {{ form.waist_cm }}
+                {% if form.waist_cm.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.waist_cm.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.hips_cm.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Hips (cm)</label>
+                {{ form.hips_cm }}
+                {% if form.hips_cm.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ form.hips_cm.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="mt-8 flex justify-between">
+            <a href="{% url 'accounts:profile' %}" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">
+                Cancel
+            </a>
+            <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">
+                Update Profile
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+// Add some client-side validation hints
+document.addEventListener('DOMContentLoaded', function() {
+    const heightInput = document.getElementById('{{ form.height_cm.id_for_label }}');
+    const weightInput = document.getElementById('{{ form.weight_kg.id_for_label }}');
+    
+    if (heightInput) {
+        heightInput.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            if (value && (value < 100 || value > 250)) {
+                this.setCustomValidity('Please enter a valid height between 100-250 cm');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    }
+    
+    if (weightInput) {
+        weightInput.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            if (value && (value < 30 || value > 300)) {
+                this.setCustomValidity('Please enter a valid weight between 30-300 kg');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,17 @@
+# Virtual environment
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Django DB and logs
+db.sqlite3
+*.log
+
+# Django collectstatic output
+staticfiles/
+
+# Secrets
+.env

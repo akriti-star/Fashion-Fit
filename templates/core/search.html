@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-4">Search Results</h1>
+        {% if query %}
+            <p class="text-gray-600">Showing results for: "<strong>{{ query }}</strong>"</p>
+        {% endif %}
+    </div>
+
+    <!-- Search Form -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <form method="get" class="flex gap-4">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search products..." 
+                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+            <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition">
+                <i class="fas fa-search mr-2"></i>Search
+            </button>
+        </form>
+    </div>
+
+    <!-- Results -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for product in products %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+            <div class="aspect-w-3 aspect-h-4">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-full h-64 object-cover">
+                {% else %}
+                    <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-image text-gray-400 text-4xl"></i>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="p-4">
+                <h3 class="font-semibold text-lg mb-2">{{ product.title }}</h3>
+                <p class="text-gray-600 text-sm mb-2 capitalize">{{ product.category }}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-2xl font-bold text-primary">${{ product.price }}</span>
+                    <a href="{% url 'products:detail' product.pk %}" class="bg-primary text-white px-4 py-2 rounded hover:bg-purple-700 transition">
+                        View
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-12">
+            <i class="fas fa-search text-gray-400 text-6xl mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">No products found</h3>
+            {% if query %}
+                <p class="text-gray-500">No products match your search for "{{ query }}"</p>
+            {% else %}
+                <p class="text-gray-500">Try entering a search term above</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="mt-8 flex justify-center">
+        <nav class="flex items-center space-x-2">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">
+                    Previous
+                </a>
+            {% endif %}
+            
+            <span class="px-3 py-2">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+                <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">
+                    Next
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

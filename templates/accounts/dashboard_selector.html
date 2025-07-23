@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Choose Dashboard - FashionFit{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Choose Your Dashboard</h1>
+            <p class="text-gray-600">Select the dashboard that fits your needs</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Buyer Dashboard -->
+            {% if can_access_buyer %}
+                <div class="bg-white rounded-lg shadow-lg p-8 border-2 border-transparent hover:border-primary transition-colors">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-shopping-bag text-blue-600 text-3xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Buyer Dashboard</h2>
+                        <p class="text-gray-600 mb-6">Browse products, manage orders, and track your purchases</p>
+                        
+                        <div class="mb-6">
+                            <div class="flex items-center justify-center space-x-4 text-sm text-gray-600">
+                                <div class="flex items-center">
+                                    <i class="fas fa-shopping-cart mr-2"></i>
+                                    <span>Shop Products</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-heart mr-2"></i>
+                                    <span>Wishlist</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-user mr-2"></i>
+                                    <span>Profile</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'accounts:buyer_dashboard' %}" class="inline-block bg-primary text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-medium">
+                            Enter Buyer Dashboard
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Seller Dashboard -->
+            {% if can_access_seller %}
+                <div class="bg-white rounded-lg shadow-lg p-8 border-2 border-transparent hover:border-primary transition-colors">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-store text-green-600 text-3xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Seller Dashboard</h2>
+                        <p class="text-gray-600 mb-6">Manage your products, track sales, and grow your business</p>
+                        
+                        <div class="mb-6">
+                            <div class="flex items-center justify-center space-x-4 text-sm text-gray-600">
+                                <div class="flex items-center">
+                                    <i class="fas fa-box mr-2"></i>
+                                    <span>Products</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-chart-line mr-2"></i>
+                                    <span>Analytics</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-dollar-sign mr-2"></i>
+                                    <span>Revenue</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'accounts:seller_dashboard' %}" class="inline-block bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 transition-colors font-medium">
+                            Enter Seller Dashboard
+                        </a>
+                        
+                        {% if not user.is_verified_seller %}
+                            <div class="mt-4 p-3 bg-yellow-100 rounded-lg">
+                                <p class="text-sm text-yellow-800">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Your seller account is pending verification
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Account Type Information -->
+        <div class="mt-8 bg-gray-50 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Account Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-600"><span class="font-medium">Account Type:</span> {{ user.get_user_type_display }}</p>
+                    <p class="text-sm text-gray-600"><span class="font-medium">Email:</span> {{ user.email }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600"><span class="font-medium">Member Since:</span> {{ user.date_joined|date:"M Y" }}</p>
+                    {% if user.business_name %}
+                        <p class="text-sm text-gray-600"><span class="font-medium">Business:</span> {{ user.business_name }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-8 text-center">
+            <div class="space-x-4">
+                <a href="{% url 'accounts:profile' %}" class="inline-block bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                    <i class="fas fa-user mr-2"></i>Edit Profile
+                </a>
+                <a href="{% url 'core:home' %}" class="inline-block bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                    <i class="fas fa-home mr-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Try-On Test - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-8">
+    <h1 class="text-3xl font-bold mb-8 text-myntra-dark">Try-On Functionality Test</h1>
+    
+    <div class="bg-white rounded-sm shadow-sm border border-gray-200 p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-myntra-dark">Authentication Status</h2>
+        {% if user.is_authenticated %}
+            <p class="text-green-600">✅ You are logged in as: {{ user.username }}</p>
+            <p class="text-sm text-myntra-gray">User type: {{ user.user_type }}</p>
+        {% else %}
+            <p class="text-red-600">❌ You are not logged in</p>
+            <a href="{% url 'accounts:login' %}" class="inline-block mt-2 bg-myntra-pink text-white px-4 py-2 rounded-sm hover:bg-myntra-pink-dark transition-colors duration-300">
+                Login Now
+            </a>
+        {% endif %}
+    </div>
+    
+    <div class="bg-white rounded-sm shadow-sm border border-gray-200 p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4 text-myntra-dark">Available Products</h2>
+        {% if products %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for product in products %}
+                <div class="border border-gray-200 rounded-sm p-4">
+                    <h3 class="font-semibold text-myntra-dark">{{ product.title }}</h3>
+                    <p class="text-sm text-myntra-gray mb-2">Price: ${{ product.price }}</p>
+                    <p class="text-sm text-myntra-gray mb-3">Category: {{ product.category }}</p>
+                    
+                    <div class="space-y-2">
+                        <a href="{% url 'products:detail' product.pk %}" class="block bg-myntra-dark text-white px-3 py-2 rounded-sm text-center text-sm hover:bg-gray-800 transition-colors duration-300">
+                            View Product
+                        </a>
+                        
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'core:try_on' product.pk %}" class="block bg-myntra-pink text-white px-3 py-2 rounded-sm text-center text-sm hover:bg-myntra-pink-dark transition-colors duration-300">
+                            <i class="fas fa-camera mr-1"></i>Try On
+                        </a>
+                        {% else %}
+                        <div class="block bg-gray-300 text-gray-500 px-3 py-2 rounded-sm text-center text-sm cursor-not-allowed">
+                            <i class="fas fa-lock mr-1"></i>Login Required
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-myntra-gray">No products found in database.</p>
+            <a href="{% url 'products:list' %}" class="inline-block mt-2 bg-myntra-pink text-white px-4 py-2 rounded-sm hover:bg-myntra-pink-dark transition-colors duration-300">
+                Go to Products
+            </a>
+        {% endif %}
+    </div>
+    
+    <div class="bg-white rounded-sm shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-semibold mb-4 text-myntra-dark">Navigation Links</h2>
+        <div class="space-y-2">
+            <a href="{% url 'core:home' %}" class="block text-myntra-pink hover:text-myntra-pink-dark">🏠 Home</a>
+            <a href="{% url 'products:list' %}" class="block text-myntra-pink hover:text-myntra-pink-dark">👕 Products List</a>
+            <a href="{% url 'outfits:list' %}" class="block text-myntra-pink hover:text-myntra-pink-dark">👔 Outfits</a>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'accounts:login' %}" class="block text-myntra-pink hover:text-myntra-pink-dark">🔐 Login</a>
+            <a href="{% url 'accounts:register' %}" class="block text-myntra-pink hover:text-myntra-pink-dark">📝 Register</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

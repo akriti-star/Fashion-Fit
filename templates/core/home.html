@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - FashionFit{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative bg-myntra-light text-myntra-dark py-20 rounded-sm mb-16 overflow-hidden border border-gray-200">
+    <div class="absolute inset-0 bg-white/50"></div>
+    <div class="relative z-10 text-center">
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 animate-fade-in text-myntra-dark">
+            Smart Fashion
+            <span class="block text-myntra-pink">
+                Try-On
+            </span>
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 text-myntra-dark max-w-2xl mx-auto animate-fade-in">
+            Get personalized size recommendations, create perfect outfits, and revolutionize your fashion experience
+        </p>
+        <div class="space-x-4 animate-fade-in">
+            <a href="{% url 'products:list' %}" class="bg-myntra-pink text-white px-8 py-4 rounded-sm font-semibold hover:bg-myntra-pink-dark transition-all duration-300 shadow-sm">
+                <i class="fas fa-shopping-bag mr-2"></i>Shop Now
+            </a>
+            <a href="{% url 'outfits:builder' %}" class="border-2 border-myntra-pink text-myntra-pink px-8 py-4 rounded-sm font-semibold hover:bg-myntra-pink hover:text-white transition-all duration-300">
+                <i class="fas fa-magic mr-2"></i>Build Outfit
+            </a>
+        </div>
+    </div>
+    <!-- Floating fashion icons -->
+    <div class="absolute top-10 left-10 text-myntra-pink/20 animate-bounce-soft">
+        <i class="fas fa-tshirt text-4xl"></i>
+    </div>
+    <div class="absolute bottom-10 right-10 text-myntra-pink/20 animate-bounce-soft" style="animation-delay: 0.5s;">
+        <i class="fas fa-shoe-prints text-4xl"></i>
+    </div>
+    <div class="absolute top-1/2 left-5 text-myntra-pink/20 animate-bounce-soft" style="animation-delay: 1s;">
+        <i class="fas fa-user-tie text-3xl"></i>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="mb-20">
+    <h2 class="text-4xl font-bold text-center mb-4 text-myntra-dark">
+        Why Choose FashionFit?
+    </h2>
+    <p class="text-center text-myntra-gray mb-12 text-lg max-w-2xl mx-auto">
+        Experience the future of fashion with our cutting-edge AI-powered platform
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center bg-white p-8 rounded-sm shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300 group">
+            <div class="w-16 h-16 bg-myntra-pink rounded-sm flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-ruler-combined text-2xl text-white"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-3 text-myntra-dark">Smart Sizing</h3>
+            <p class="text-myntra-gray leading-relaxed">Get personalized size recommendations based on your body measurements and preferences</p>
+        </div>
+        <div class="text-center bg-white p-8 rounded-sm shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300 group">
+            <div class="w-16 h-16 bg-myntra-pink rounded-sm flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-palette text-2xl text-white"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-3 text-myntra-dark">Outfit Builder</h3>
+            <p class="text-myntra-gray leading-relaxed">Create and save complete outfits with our intuitive drag-and-drop builder interface</p>
+        </div>
+        <div class="text-center bg-white p-8 rounded-sm shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300 group">
+            <div class="w-16 h-16 bg-myntra-pink rounded-sm flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <i class="fas fa-eye text-2xl text-white"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-3 text-myntra-dark">Virtual Try-On</h3>
+            <p class="text-myntra-gray leading-relaxed">Visualize how clothes look on different body types before making a purchase</p>
+        </div>
+    </div>
+</section>
+
+<!-- Virtual Try-On Showcase -->
+<section class="mb-20">
+    <div class="bg-gradient-to-r from-myntra-pink to-myntra-pink-dark rounded-sm text-white p-12 text-center">
+        <h2 class="text-4xl font-bold mb-4">Experience Virtual Try-On</h2>
+        <p class="text-xl mb-8 opacity-90">See how clothes look on you before buying!</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'core:try_on_test' %}" class="bg-white text-myntra-pink px-8 py-3 rounded-sm font-semibold hover:bg-gray-100 transition-colors duration-300">
+                <i class="fas fa-camera mr-2"></i>Try Virtual Try-On
+            </a>
+            <a href="{% url 'products:list' %}" class="border-2 border-white text-white px-8 py-3 rounded-sm font-semibold hover:bg-white hover:text-myntra-pink transition-colors duration-300">
+                <i class="fas fa-shopping-bag mr-2"></i>Browse Products
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="mb-20">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold text-myntra-dark">Featured Products</h2>
+        <a href="{% url 'products:list' %}" class="text-myntra-pink hover:text-myntra-pink-dark font-semibold">
+            View All <i class="fas fa-arrow-right ml-1"></i>
+        </a>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for product in featured_products %}
+        <div class="bg-white rounded-sm shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
+            <div class="aspect-w-3 aspect-h-4">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-full h-64 object-cover">
+                {% else %}
+                    <div class="w-full h-64 bg-myntra-light flex items-center justify-center">
+                        <i class="fas fa-image text-myntra-gray text-4xl"></i>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="p-4">
+                <h3 class="font-semibold text-lg mb-2 text-myntra-dark">{{ product.title }}</h3>
+                <p class="text-myntra-gray text-sm mb-2 capitalize">{{ product.category }}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-2xl font-bold text-myntra-dark">${{ product.price }}</span>
+                    <a href="{% url 'products:detail' product.pk %}" class="bg-myntra-pink text-white px-4 py-2 rounded-sm hover:bg-myntra-pink-dark transition-colors duration-300">
+                        View
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-8">
+            <p class="text-gray-500">No products available yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Recent Outfits -->
+<section class="mb-16">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold text-myntra-dark">Trending Outfits</h2>
+        <a href="{% url 'outfits:list' %}" class="text-myntra-pink hover:text-myntra-pink-dark font-semibold">
+            View All <i class="fas fa-arrow-right ml-1"></i>
+        </a>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for outfit in recent_outfits %}
+        <div class="bg-white rounded-sm shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
+            <div class="p-6">
+                <h3 class="font-semibold text-lg mb-2 text-myntra-dark">{{ outfit.name }}</h3>
+                <p class="text-myntra-gray text-sm mb-4">by {{ outfit.user.username }}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-bold text-myntra-dark">${{ outfit.get_total_price }}</span>
+                    <a href="{% url 'outfits:detail' outfit.pk %}" class="bg-myntra-pink text-white px-4 py-2 rounded-sm hover:bg-myntra-pink-dark transition-colors duration-300">
+                        View Outfit
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-8">
+            <p class="text-myntra-gray">No outfits available yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="bg-myntra-pink text-white py-12 rounded-sm text-center">
+    <h2 class="text-3xl font-bold mb-4">Ready to Transform Your Style?</h2>
+    <p class="text-xl mb-8">Join thousands of users who found their perfect fit</p>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'accounts:register' %}" class="bg-white text-myntra-pink px-8 py-3 rounded-sm font-semibold hover:bg-myntra-light transition-colors duration-300">
+        Get Started Today
+    </a>
+    {% else %}
+    <a href="{% url 'core:dashboard' %}" class="bg-white text-myntra-pink px-8 py-3 rounded-sm font-semibold hover:bg-myntra-light transition-colors duration-300">
+        Go to Dashboard
+    </a>
+    {% endif %}
+</section>
+{% endblock %}
