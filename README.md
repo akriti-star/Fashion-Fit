@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # FashionFit - Smart Fashion Try-On Platform
 
 A modern e-commerce platform that revolutionizes online clothing shopping by integrating virtual try-on features and personalized size recommendations.
@@ -250,3 +251,6 @@ For questions or issues:
 ---
 
 Built with ❤️ using Django and Tailwind CSS
+=======
+# Fashion-Fit
+>>>>>>> 062c0b573f0422da8a90ff550333d17d7fbea7b6
