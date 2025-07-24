@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', "django-insecure-7=4s994gbnzjq#b+4#yqz
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
-ALLOWED_HOSTS = ['web-production-167e.up.railway.app', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['web-production-167e.up.railway.app', 'fashionfit.onrender.com', 'fashionfit-app.herokuapp.com', '127.0.0.1', 'localhost', '*']
 
 
 
@@ -162,11 +162,16 @@ LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'core:home'
 LOGOUT_REDIRECT_URL = 'core:home'
 
+# Static files configuration
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-
-
+# Static files storage
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# WhiteNoise configuration for serving media files
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True
+
+# Add WhiteNoise middleware
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
