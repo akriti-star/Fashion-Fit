@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-7=4s994gbnzjq#b+4#yqzvksns+jbaw#8px&nj430t%#3@o_#k"
+SECRET_KEY = os.environ.get('SECRET_KEY', "django-insecure-7=4s994gbnzjq#b+4#yqzvksns+jbaw#8px&nj430t%#3@o_#k")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 ALLOWED_HOSTS = ['web-production-167e.up.railway.app', '127.0.0.1', 'localhost']
 
 
@@ -82,12 +82,18 @@ WSGI_APPLICATION = "FashionFit.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# Use Railway's DATABASE_URL if available, otherwise fallback to SQLite
+if os.environ.get('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # Original PostgreSQL configuration (commented out)
 # DATABASES = {
