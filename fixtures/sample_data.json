@@ -1,0 +1,143 @@
+[
+  {
+    "model": "accounts.customuser",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$test$hash",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "testbuyer",
+      "first_name": "",
+      "last_name": "",
+      "email": "testbuyer@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-01-01T00:00:00Z",
+      "user_type": "buyer",
+      "phone": null,
+      "address": null,
+      "profile_picture": "",
+      "height_cm": 175,
+      "weight_kg": 70,
+      "body_type": "regular",
+      "gender": "M",
+      "chest_cm": 95.0,
+      "waist_cm": 80.0,
+      "hips_cm": 90.0,
+      "business_name": null,
+      "business_description": null,
+      "tax_id": null,
+      "is_verified_seller": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$test$hash",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "testseller",
+      "first_name": "",
+      "last_name": "",
+      "email": "testseller@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-01-01T00:00:00Z",
+      "user_type": "seller",
+      "phone": null,
+      "address": null,
+      "profile_picture": "",
+      "height_cm": null,
+      "weight_kg": null,
+      "body_type": null,
+      "gender": null,
+      "chest_cm": null,
+      "waist_cm": null,
+      "hips_cm": null,
+      "business_name": "Test Store",
+      "business_description": "A test store for development",
+      "tax_id": null,
+      "is_verified_seller": true,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 1,
+    "fields": {
+      "name": "Tops",
+      "slug": "tops",
+      "description": "T-shirts, shirts, and tops"
+    }
+  },
+  {
+    "model": "products.category",
+    "pk": 2,
+    "fields": {
+      "name": "Bottoms",
+      "slug": "bottoms", 
+      "description": "Pants, jeans, and bottoms"
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 1,
+    "fields": {
+      "title": "Blue Cotton T-Shirt",
+      "description": "Comfortable blue cotton t-shirt perfect for casual wear",
+      "price": "25.99",
+      "category": 1,
+      "seller": 2,
+      "image": "",
+      "size": "M",
+      "color": "Blue",
+      "material": "Cotton",
+      "brand": "FashionFit",
+      "is_available": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 2,
+    "fields": {
+      "title": "Dark Denim Jeans",
+      "description": "Classic dark wash denim jeans with comfortable fit",
+      "price": "79.99",
+      "category": 2,
+      "seller": 2,
+      "image": "",
+      "size": "L",
+      "color": "Dark Blue",
+      "material": "Denim",
+      "brand": "FashionFit",
+      "is_available": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 3,
+    "fields": {
+      "title": "Red Polo Shirt",
+      "description": "Classic red polo shirt for smart casual occasions",
+      "price": "35.99",
+      "category": 1,
+      "seller": 2,
+      "image": "",
+      "size": "L",
+      "color": "Red",
+      "material": "Cotton Blend",
+      "brand": "FashionFit",
+      "is_available": true,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  }
+]

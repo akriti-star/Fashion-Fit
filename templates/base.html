@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FashionFit - Smart Fashion Try-On{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#FF3F6C',        // Myntra Pink
+                        'secondary': '#FF527B',      // Lighter Pink
+                        'accent': '#FF3F6C',         // Same as primary
+                        'myntra-pink': '#FF3F6C',
+                        'myntra-dark': '#282C3F',
+                        'myntra-light': '#F5F5F6',
+                        'myntra-gray': '#696E79',
+                        'myntra-orange': '#FF905A',
+                        'myntra-green': '#03A685',
+                        'myntra-blue': '#0DB7AF',
+                        'myntra-purple': '#8E2DE2',
+                        'myntra-border': '#E9E9ED',
+                        'myntra-bg': '#F8F9FA',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'bounce-soft': 'bounceSoft 0.6s ease-in-out',
+                        'gradient': 'gradient 3s ease infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        },
+                        bounceSoft: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' },
+                        },
+                        gradient: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Myntra-inspired styles */
+        .myntra-shadow {
+            box-shadow: 0 2px 16px rgba(40, 44, 63, 0.07);
+        }
+        .myntra-hover:hover {
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+        .myntra-card {
+            background: white;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+        .myntra-card:hover {
+            box-shadow: 0 4px 20px rgba(40, 44, 63, 0.1);
+        }
+        .myntra-btn {
+            background: #FF3F6C;
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .myntra-btn:hover {
+            background: #E8355F;
+            transform: translateY(-1px);
+        }
+        .myntra-btn-outline {
+            background: white;
+            color: #FF3F6C;
+            border: 1px solid #FF3F6C;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .myntra-btn-outline:hover {
+            background: #FF3F6C;
+            color: white;
+        }
+        .myntra-input {
+            border: 1px solid #D4D5D9;
+            background: white;
+            color: #282C3F;
+            font-size: 14px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .myntra-input:focus {
+            border-color: #FF3F6C;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 63, 108, 0.1);
+        }
+        .myntra-nav {
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            backdrop-filter: blur(10px);
+        }
+        .myntra-dropdown {
+            background: white;
+            border: 1px solid #f0f0f0;
+            box-shadow: 0 8px 30px rgba(40, 44, 63, 0.15);
+            border-radius: 4px;
+        }
+        .myntra-badge {
+            background: #FF3F6C;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        /* Virtual Try-On Button Enhancements */
+        .tryon-btn {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(45deg, #FF3F6C, #FF527B);
+            box-shadow: 0 4px 15px rgba(255, 63, 108, 0.3);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+        .tryon-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 63, 108, 0.4);
+        }
+        .tryon-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        .tryon-btn:hover::before {
+            left: 100%;
+        }
+        .tryon-icon {
+            transition: transform 0.3s ease;
+        }
+        .tryon-btn:hover .tryon-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .myntra-price {
+            color: #282C3F;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .myntra-discount {
+            color: #FF905A;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .myntra-original-price {
+            color: #94969F;
+            font-size: 12px;
+            text-decoration: line-through;
+        }
+        .myntra-brand {
+            color: #282C3F;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .myntra-product-name {
+            color: #535766;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        .myntra-rating {
+            background: #03A685;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FAFBFC;
+        }
+        .myntra-section {
+            background: white;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body class="bg-myntra-bg">
+    <!-- Navigation -->
+    <nav class="myntra-nav myntra-shadow sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'core:home' %}" class="flex items-center space-x-2">
+                        <div class="w-10 h-10 bg-myntra-pink rounded flex items-center justify-center">
+                            <i class="fas fa-tshirt text-white text-lg"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-myntra-dark">FashionFit</span>
+                    </a>
+                    
+                    <!-- Show user role indicator -->
+                    {% if user.is_authenticated %}
+                        <div class="ml-6 text-sm animate-fade-in">
+                            {% if user.is_seller %}
+                                <span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-medium border border-green-200">
+                                    <i class="fas fa-store mr-1"></i>{{ user.business_name|default:user.username }}
+                                </span>
+                            {% elif user.is_buyer %}
+                                <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium border border-blue-200">
+                                    <i class="fas fa-shopping-bag mr-1"></i>{{ user.username }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <!-- Mobile Virtual Try-On Button -->
+                    <div class="md:hidden">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'core:try_on_test' %}" class="bg-myntra-pink text-white px-4 py-2.5 rounded-sm font-bold text-xs tracking-wide uppercase hover:bg-myntra-pink-dark transition-all duration-300 shadow-md">
+                            <i class="fas fa-camera mr-1 tryon-icon"></i>TRY-ON
+                        </a>
+                        {% else %}
+                        <a href="{% url 'accounts:login' %}?next={% url 'core:try_on_test' %}" class="bg-myntra-dark text-white px-4 py-2.5 rounded-sm font-bold text-xs tracking-wide uppercase hover:bg-gray-800 transition-all duration-300 shadow-md">
+                            <i class="fas fa-camera mr-1 tryon-icon"></i>TRY-ON
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Search -->
+                    <form action="{% url 'core:search' %}" method="get" class="hidden sm:block">
+                        <div class="relative">
+                            <input type="text" name="q" placeholder="Search for products, brands and more" 
+                                   class="w-80 myntra-input pl-10 text-sm">
+                            <i class="fas fa-search absolute left-3 top-4 text-myntra-gray"></i>
+                        </div>
+                    </form>
+                    
+                    <!-- Navigation Links -->
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="{% url 'products:list' %}" class="text-myntra-dark hover:text-myntra-pink font-medium text-sm tracking-wide uppercase transition-colors">
+                            PRODUCTS
+                        </a>
+                        <a href="{% url 'outfits:list' %}" class="text-myntra-dark hover:text-myntra-pink font-medium text-sm tracking-wide uppercase transition-colors">
+                            OUTFITS
+                        </a>
+                        <a href="{% url 'outfits:builder' %}" class="text-myntra-dark hover:text-myntra-pink font-medium text-sm tracking-wide uppercase transition-colors">
+                            BUILDER
+                        </a>
+                        <a href="{% url 'core:contact' %}" class="text-myntra-dark hover:text-myntra-pink font-medium text-sm tracking-wide uppercase transition-colors">
+                            CONTACT
+                        </a>
+                        
+                        <!-- Virtual Try-On Button -->
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'core:try_on_test' %}" class="tryon-btn text-white px-6 py-2.5 rounded-sm font-bold text-sm tracking-wide uppercase transition-all duration-300">
+                            <i class="fas fa-camera mr-2 tryon-icon"></i>
+                            <span class="relative z-10">VIRTUAL TRY-ON</span>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'accounts:login' %}?next={% url 'core:try_on_test' %}" class="bg-myntra-dark text-white px-6 py-2.5 rounded-sm font-bold text-sm tracking-wide uppercase hover:bg-gray-800 transition-all duration-300 shadow-sm relative overflow-hidden group">
+                            <i class="fas fa-camera mr-2 tryon-icon"></i>
+                            <span class="relative z-10">TRY ON</span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -skew-x-12 transition-all duration-700 group-hover:translate-x-full"></div>
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    {% if user.is_authenticated %}
+                        <!-- Role-based navigation -->
+                        {% if user.is_seller %}
+                            <a href="{% url 'products:seller_list' %}" class="text-myntra-dark hover:text-myntra-pink font-medium text-sm tracking-wide uppercase transition-colors">
+                                <i class="fas fa-box mr-1"></i>MY PRODUCTS
+                            </a>
+                            <a href="{% url 'products:seller_create' %}" class="bg-myntra-pink text-white px-4 py-2 rounded-sm font-medium hover:bg-myntra-pink-dark transition-all duration-300 text-sm tracking-wide uppercase">
+                                <i class="fas fa-plus mr-1"></i>ADD PRODUCT
+                            </a>
+                        {% endif %}
+                        
+                        <a href="{% url 'core:wishlist' %}" class="relative text-myntra-dark hover:text-myntra-pink transition-colors duration-200">
+                            <i class="fas fa-heart text-lg"></i>
+                            <span class="absolute -top-2 -right-2 bg-myntra-pink text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                                3
+                            </span>
+                        </a>
+                        
+                        <!-- User dropdown -->
+                        <div class="relative group">
+                            <button class="flex items-center text-myntra-dark hover:text-myntra-pink font-medium transition-colors duration-200 bg-myntra-light px-3 py-2 rounded-sm hover:bg-gray-100">
+                                <div class="w-8 h-8 bg-myntra-pink rounded-full flex items-center justify-center text-white text-sm mr-2">
+                                    {{ user.first_name.0|default:user.username.0|upper }}
+                                </div>
+                                <span class="text-sm">
+                                    {% if user.is_seller and user.business_name %}
+                                        {{ user.business_name }}
+                                    {% else %}
+                                        {{ user.first_name|default:user.username }}
+                                    {% endif %}
+                                </span>
+                                <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                            </button>
+                            
+                            <!-- Dropdown menu -->
+                            <div class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-sm shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                <div class="py-2">
+                                    {% if user.is_seller %}
+                                        <a href="{% url 'accounts:seller_dashboard' %}" class="block px-4 py-3 text-sm text-myntra-dark hover:bg-myntra-light hover:text-myntra-pink transition-all duration-200">
+                                            <i class="fas fa-tachometer-alt mr-3 text-myntra-pink"></i>Seller Dashboard
+                                        </a>
+                                        <a href="{% url 'products:seller_list' %}" class="block px-4 py-3 text-sm text-myntra-dark hover:bg-myntra-light hover:text-myntra-pink transition-all duration-200">
+                                            <i class="fas fa-box mr-3 text-myntra-pink"></i>Manage Products
+                                        </a>
+                                        <a href="{% url 'products:seller_create' %}" class="block px-4 py-3 text-sm text-myntra-dark hover:bg-myntra-light hover:text-myntra-pink transition-all duration-200">
+                                            <i class="fas fa-plus mr-3 text-myntra-pink"></i>Add Product
+                                        </a>
+                                        <div class="border-t border-gray-200 my-2"></div>
+                                    {% endif %}
+                                    
+                                    {% if user.is_buyer %}
+                                        <a href="{% url 'accounts:buyer_dashboard' %}" class="block px-4 py-3 text-sm text-myntra-dark hover:bg-myntra-light hover:text-myntra-pink transition-all duration-200">
+                                            <i class="fas fa-shopping-bag mr-3 text-myntra-pink"></i>Buyer Dashboard
+                                        </a>
+                                        <a href="{% url 'core:try_on_test' %}" class="block px-4 py-3 text-sm text-white bg-myntra-pink hover:bg-myntra-pink-dark transition-all duration-200 mx-2 rounded-sm mb-2 shadow-sm">
+                                            <i class="fas fa-camera mr-3"></i>Virtual Try-On
+                                            <span class="text-xs opacity-90 block">Try clothes virtually</span>
+                                        </a>
+                                        <div class="border-t border-gray-200 my-2"></div>
+                                    {% endif %}
+                                    
+                                    <a href="{% url 'accounts:profile' %}" class="block px-4 py-3 text-sm text-myntra-dark hover:bg-myntra-light hover:text-myntra-pink transition-all duration-200">
+                                        <i class="fas fa-user mr-3 text-myntra-pink"></i>Profile
+                                    </a>
+                                    <a href="{% url 'core:wishlist' %}" class="block px-4 py-3 text-sm text-myntra-dark hover:bg-myntra-light hover:text-myntra-pink transition-all duration-200">
+                                        <i class="fas fa-heart mr-3 text-myntra-pink"></i>Wishlist
+                                    </a>
+                                    <div class="border-t border-gray-200 my-2"></div>
+                                    <form method="post" action="{% url 'accounts:logout' %}" class="block">
+                                        {% csrf_token %}
+                                        <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-200">
+                                            <i class="fas fa-sign-out-alt mr-3"></i>Logout
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}" class="text-myntra-dark hover:text-myntra-pink font-medium transition-colors duration-200 text-sm tracking-wide uppercase">LOGIN</a>
+                        <a href="{% url 'accounts:register' %}" class="bg-myntra-pink text-white px-6 py-2 rounded-sm font-medium hover:bg-myntra-pink-dark transition-all duration-300 text-sm tracking-wide uppercase">
+                            SIGN UP
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <div class="alert alert-{{ message.tags }} bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-sm mb-4 shadow-sm">
+                        <i class="fas fa-exclamation-circle mr-2"></i>{{ message }}
+                    </div>
+                {% elif message.tags == 'success' %}
+                    <div class="alert alert-{{ message.tags }} bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-sm mb-4 shadow-sm">
+                        <i class="fas fa-check-circle mr-2"></i>{{ message }}
+                    </div>
+                {% elif message.tags == 'warning' %}
+                    <div class="alert alert-{{ message.tags }} bg-yellow-50 border border-yellow-200 text-yellow-700 px-6 py-4 rounded-sm mb-4 shadow-sm">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>{{ message }}
+                    </div>
+                {% elif message.tags == 'info' %}
+                    <div class="alert alert-{{ message.tags }} bg-blue-50 border border-blue-200 text-blue-700 px-6 py-4 rounded-sm mb-4 shadow-sm">
+                        <i class="fas fa-info-circle mr-2"></i>{{ message }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-{{ message.tags }} bg-gray-50 border border-gray-200 text-gray-700 px-6 py-4 rounded-sm mb-4 shadow-sm">
+                        <i class="fas fa-bell mr-2"></i>{{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-myntra-dark text-white mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-myntra-pink">
+                        <i class="fas fa-tshirt mr-2"></i>FashionFit
+                    </h3>
+                    <p class="text-gray-300 mb-4">Smart fashion try-on with personalized size recommendations and AI-powered styling.</p>
+                    <div class="flex space-x-4">
+                        <a href="{% url 'core:home' %}" class="text-gray-400 hover:text-myntra-pink transition-colors duration-300" title="Visit our Facebook page">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="{% url 'core:home' %}" class="text-gray-400 hover:text-myntra-pink transition-colors duration-300" title="Follow us on Twitter">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="{% url 'core:home' %}" class="text-gray-400 hover:text-myntra-pink transition-colors duration-300" title="Follow us on Instagram">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="{% url 'core:home' %}" class="text-gray-400 hover:text-myntra-pink transition-colors duration-300" title="Subscribe to our YouTube channel">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-md font-semibold mb-4 text-myntra-pink">Quick Links</h4>
+                    <ul class="space-y-3 text-gray-300">
+                        <li><a href="{% url 'products:list' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                            <i class="fas fa-shopping-bag mr-2"></i>Products
+                        </a></li>
+                        <li><a href="{% url 'outfits:list' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                            <i class="fas fa-tshirt mr-2"></i>Outfits
+                        </a></li>
+                        <li><a href="{% url 'outfits:builder' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                            <i class="fas fa-magic mr-2"></i>Outfit Builder
+                        </a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-md font-semibold mb-4 text-myntra-pink">Account</h4>
+                    <ul class="space-y-3 text-gray-300">
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'accounts:profile' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                                <i class="fas fa-user mr-2"></i>Profile
+                            </a></li>
+                            <li><a href="{% url 'core:dashboard' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                            </a></li>
+                            <li><a href="{% url 'core:wishlist' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                                <i class="fas fa-heart mr-2"></i>Wishlist
+                            </a></li>
+                        {% else %}
+                            <li><a href="{% url 'accounts:login' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                                <i class="fas fa-sign-in-alt mr-2"></i>Login
+                            </a></li>
+                            <li><a href="{% url 'accounts:register' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                                <i class="fas fa-user-plus mr-2"></i>Sign Up
+                            </a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-md font-semibold mb-4 text-myntra-pink">Support</h4>
+                    <ul class="space-y-3 text-gray-300">
+                        <li><a href="{% url 'core:help_center' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                            <i class="fas fa-question-circle mr-2"></i>Help Center
+                        </a></li>
+                        <li><a href="{% url 'core:contact' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>Contact Us
+                        </a></li>
+                        <li><a href="{% url 'core:privacy_policy' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                            <i class="fas fa-shield-alt mr-2"></i>Privacy Policy
+                        </a></li>
+                        <li><a href="{% url 'core:terms_of_service' %}" class="hover:text-myntra-pink transition-colors duration-300 flex items-center">
+                            <i class="fas fa-file-contract mr-2"></i>Terms of Service
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-400">
+                    &copy; 2025 FashionFit. All rights reserved. Made with 
+                    <i class="fas fa-heart text-myntra-pink mx-1"></i> 
+                    for fashion enthusiasts.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Enhanced JavaScript for better user experience
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-hide messages after 5 seconds with animation
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.transition = 'all 0.5s ease-out';
+                    message.style.transform = 'translateY(-20px)';
+                    message.style.opacity = '0';
+                    setTimeout(function() {
+                        message.remove();
+                    }, 500);
+                }, 5000);
+            });
+            
+            // Add smooth scrolling to all links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Add loading animation to form submissions
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function() {
+                    const submitButton = this.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+                        submitButton.disabled = true;
+                    }
+                });
+            });
+            
+            // Add fade-in animation to cards
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.card-shadow, .hover-lift').forEach(card => {
+                observer.observe(card);
+            });
+            
+            // Add ripple effect to buttons
+            document.querySelectorAll('button, .btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const ripple = document.createElement('span');
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+        
+        // Add CSS for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                background-color: rgba(255, 255, 255, 0.6);
+                pointer-events: none;
+            }
+            
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+            
+            button, .btn {
+                position: relative;
+                overflow: hidden;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

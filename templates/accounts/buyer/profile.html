@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block title %}Buyer Profile - FashionFit{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Profile Header -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div class="flex items-center space-x-6">
+                <div class="relative">
+                    {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="{{ user.get_full_name }}" class="w-24 h-24 rounded-full object-cover">
+                    {% else %}
+                        <div class="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-user text-blue-600 text-3xl"></i>
+                        </div>
+                    {% endif %}
+                    <div class="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                        <i class="fas fa-shopping-bag text-xs"></i>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h1 class="text-2xl font-bold text-gray-800">{{ user.get_full_name|default:user.username }}</h1>
+                    <p class="text-gray-600">{{ user.email }}</p>
+                    <div class="flex items-center space-x-4 mt-2">
+                        <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                            <i class="fas fa-user-tag mr-1"></i>{{ user.get_user_type_display }}
+                        </span>
+                        <span class="text-gray-500 text-sm">Member since {{ user.date_joined|date:"M Y" }}</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <a href="{% url 'accounts:profile_edit' %}" class="inline-block bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-edit mr-2"></i>Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Personal Information -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Personal Information</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                            <p class="text-gray-900">{{ user.first_name|default:"Not provided" }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                            <p class="text-gray-900">{{ user.last_name|default:"Not provided" }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <p class="text-gray-900">{{ user.email }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <p class="text-gray-900">{{ user.phone|default:"Not provided" }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                            <p class="text-gray-900">{{ user.address|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Body Measurements -->
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Body Measurements</h2>
+                        <a href="{% url 'accounts:measurements' %}" class="text-primary hover:text-purple-700 text-sm">
+                            <i class="fas fa-edit mr-1"></i>Update
+                        </a>
+                    </div>
+                    {% if user.userprofile %}
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-primary">{{ user.userprofile.chest_size|default:"--" }}</div>
+                                <div class="text-sm text-gray-600">Chest (cm)</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-primary">{{ user.userprofile.waist_size|default:"--" }}</div>
+                                <div class="text-sm text-gray-600">Waist (cm)</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-primary">{{ user.userprofile.height|default:"--" }}</div>
+                                <div class="text-sm text-gray-600">Height (cm)</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-primary">{{ user.userprofile.weight|default:"--" }}</div>
+                                <div class="text-sm text-gray-600">Weight (kg)</div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-ruler-combined text-4xl mb-4"></i>
+                            <p>No measurements added yet</p>
+                            <a href="{% url 'accounts:measurements' %}" class="inline-block mt-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                                Add Measurements
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Order History -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Recent Orders</h2>
+                    <div class="space-y-4">
+                        <!-- Sample order - replace with actual orders -->
+                        <div class="border rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-shopping-bag text-gray-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium">Order #12345</h3>
+                                        <p class="text-sm text-gray-600">2 items • $89.99</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-block bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">
+                                        Delivered
+                                    </span>
+                                    <p class="text-sm text-gray-600 mt-1">Nov 15, 2023</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-box-open text-4xl mb-4"></i>
+                            <p>No orders yet</p>
+                            <a href="{% url 'core:home' %}" class="inline-block mt-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                                Start Shopping
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Quick Stats -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Quick Stats</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Total Orders</span>
+                            <span class="font-semibold">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Wishlist Items</span>
+                            <span class="font-semibold">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Reviews Given</span>
+                            <span class="font-semibold">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Loyalty Points</span>
+                            <span class="font-semibold text-primary">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Preferences</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Size Recommendations</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" value="" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Email Notifications</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" value="" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Quick Actions</h3>
+                    <div class="space-y-2">
+                        <a href="{% url 'accounts:measurements' %}" class="block w-full bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-center">
+                            <i class="fas fa-ruler-combined mr-2"></i>Update Measurements
+                        </a>
+                        <a href="{% url 'accounts:size_recommendation' %}" class="block w-full bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-center">
+                            <i class="fas fa-search mr-2"></i>Size Recommendation
+                        </a>
+                        <a href="{% url 'accounts:buyer_dashboard' %}" class="block w-full bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-center">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

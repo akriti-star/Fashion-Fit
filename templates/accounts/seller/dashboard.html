@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+
+{% block title %}Seller Dashboard - FashionFit{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Seller Dashboard</h1>
+                    <p class="text-gray-600">Welcome back, {{ user.business_name|default:user.username }}!</p>
+                </div>
+                <div class="mt-4 sm:mt-0">
+                    <a href="{% url 'products:seller_create' %}" class="inline-flex items-center bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium shadow-md">
+                        <i class="fas fa-plus mr-2"></i>Add New Product
+                    </a>
+                </div>
+            </div>
+            
+            {% if user.is_verified_seller %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    <i class="fas fa-check-circle mr-1"></i>Verified Seller
+                </span>
+            {% else %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                    <i class="fas fa-clock mr-1"></i>Pending Verification
+                </span>
+            {% endif %}
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Total Products</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_products }}</p>
+                    </div>
+                    <div class="p-3 bg-blue-100 rounded-full">
+                        <i class="fas fa-box text-blue-600"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Total Orders</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_orders }}</p>
+                    </div>
+                    <div class="p-3 bg-green-100 rounded-full">
+                        <i class="fas fa-shopping-cart text-green-600"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Total Revenue</p>
+                        <p class="text-2xl font-bold text-gray-900">${{ total_revenue }}</p>
+                    </div>
+                    <div class="p-3 bg-purple-100 rounded-full">
+                        <i class="fas fa-dollar-sign text-purple-600"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Pending Orders</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ pending_orders|length }}</p>
+                    </div>
+                    <div class="p-3 bg-yellow-100 rounded-full">
+                        <i class="fas fa-clock text-yellow-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Recent Orders -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4">Recent Orders</h2>
+                    {% if pending_orders %}
+                        <div class="space-y-4">
+                            {% for order in pending_orders %}
+                                <div class="flex items-center justify-between p-4 border rounded-lg">
+                                    <div>
+                                        <p class="font-medium">Order #{{ order.id }}</p>
+                                        <p class="text-sm text-gray-600">{{ order.created_at|date:"M d, Y" }}</p>
+                                        <p class="text-sm text-gray-600">Customer: {{ order.customer.username }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-bold">${{ order.total_amount }}</p>
+                                        <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
+                                            {{ order.status|title }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-8">
+                            <i class="fas fa-shopping-cart text-gray-400 text-4xl mb-4"></i>
+                            <p class="text-gray-600">No pending orders</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Products & Quick Actions -->
+            <div class="space-y-6">
+                <!-- Recent Products -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Recent Products</h3>
+                        <a href="{% url 'products:seller_list' %}" class="text-blue-600 hover:text-blue-700 text-sm">View All</a>
+                    </div>
+                    
+                    {% if recent_products %}
+                        <div class="space-y-3">
+                            {% for product in recent_products %}
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center space-x-3">
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-10 h-10 rounded-lg object-cover">
+                                        {% else %}
+                                            <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-image text-gray-400"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <p class="font-medium text-sm truncate">{{ product.title }}</p>
+                                            <p class="text-xs text-gray-500">{{ product.get_category_display }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-bold text-sm text-green-600">${{ product.price }}</p>
+                                        <p class="text-xs text-gray-500">{{ product.created_at|date:"M d" }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <a href="{% url 'products:seller_create' %}" class="inline-flex items-center text-green-600 hover:text-green-700 text-sm font-medium">
+                                <i class="fas fa-plus mr-1"></i>Add Another Product
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-6">
+                            <i class="fas fa-box text-gray-400 text-3xl mb-3"></i>
+                            <p class="text-gray-600 mb-3">No products added yet</p>
+                            <a href="{% url 'products:seller_create' %}" class="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
+                                <i class="fas fa-plus mr-2"></i>Add Your First Product
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Product Categories -->
+                {% if product_categories %}
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-4">Product Categories</h3>
+                    <div class="space-y-2">
+                        {% for category in product_categories %}
+                            <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                <span class="text-sm font-medium capitalize">{{ category.category|title }}</span>
+                                <span class="text-sm text-gray-600">{{ category.count }} item{{ category.count|pluralize }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-4 text-center">
+                        <a href="{% url 'products:seller_create' %}" class="inline-flex items-center text-green-600 hover:text-green-700 text-sm font-medium">
+                            <i class="fas fa-plus mr-1"></i>Add to Any Category
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Seller Actions -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <a href="{% url 'products:seller_create' %}" class="block w-full bg-green-600 text-white py-3 px-4 rounded-lg text-center hover:bg-green-700 transition-colors font-medium">
+                            <i class="fas fa-plus mr-2"></i>Add New Product
+                        </a>
+                        <a href="{% url 'products:seller_list' %}" class="block w-full bg-blue-600 text-white py-3 px-4 rounded-lg text-center hover:bg-blue-700 transition-colors font-medium">
+                            <i class="fas fa-box mr-2"></i>Manage Products
+                        </a>
+                        <a href="{% url 'accounts:seller_profile' %}" class="block w-full bg-gray-600 text-white py-3 px-4 rounded-lg text-center hover:bg-gray-700 transition-colors font-medium">
+                            <i class="fas fa-store mr-2"></i>Store Profile
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Business Info -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-4">Business Info</h3>
+                    <div class="space-y-2">
+                        <p class="text-sm"><span class="font-medium">Business Name:</span> {{ user.business_name|default:"Not set" }}</p>
+                        <p class="text-sm"><span class="font-medium">Email:</span> {{ user.email }}</p>
+                        <p class="text-sm"><span class="font-medium">Member since:</span> {{ user.date_joined|date:"M Y" }}</p>
+                        <p class="text-sm"><span class="font-medium">Status:</span> 
+                            {% if user.is_verified_seller %}
+                                <span class="text-green-600">Verified</span>
+                            {% else %}
+                                <span class="text-yellow-600">Pending</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Performance -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold mb-4">Performance</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Average Rating</span>
+                            <span class="text-sm font-medium">4.5/5</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Response Time</span>
+                            <span class="text-sm font-medium">2 hours</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Order Fulfillment</span>
+                            <span class="text-sm font-medium">98%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="mt-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-plus text-blue-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium">Product added</p>
+                            <p class="text-xs text-gray-500">2 hours ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check text-green-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium">Order completed</p>
+                            <p class="text-xs text-gray-500">1 day ago</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-edit text-yellow-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium">Product updated</p>
+                            <p class="text-xs text-gray-500">3 days ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

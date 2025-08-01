@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+    
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-primary text-white rounded-lg p-6">
+            <h3 class="text-lg font-semibold mb-2">My Outfits</h3>
+            <p class="text-3xl font-bold">{{ user_outfits|length }}</p>
+        </div>
+        <div class="bg-secondary text-white rounded-lg p-6">
+            <h3 class="text-lg font-semibold mb-2">Wishlist Items</h3>
+            <p class="text-3xl font-bold">{{ wishlist_items|length }}</p>
+        </div>
+        <div class="bg-accent text-white rounded-lg p-6">
+            <h3 class="text-lg font-semibold mb-2">Recommended Size</h3>
+            <p class="text-3xl font-bold">{{ recommended_size|default:"N/A" }}</p>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Recent Outfits -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">My Recent Outfits</h2>
+                <a href="{% url 'outfits:list' %}" class="text-primary hover:text-purple-700">View All</a>
+            </div>
+            
+            <div class="space-y-4">
+                {% for outfit in user_outfits %}
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <div>
+                        <h3 class="font-semibold">{{ outfit.name }}</h3>
+                        <p class="text-sm text-gray-600">{{ outfit.products.count }} items</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-primary">${{ outfit.get_total_price }}</p>
+                        <a href="{% url 'outfits:detail' outfit.pk %}" class="text-sm text-primary hover:text-purple-700">View</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-center py-4">No outfits created yet.</p>
+                <div class="text-center">
+                    <a href="{% url 'outfits:builder' %}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                        Create Your First Outfit
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Wishlist -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">My Wishlist</h2>
+                <a href="{% url 'core:wishlist' %}" class="text-primary hover:text-purple-700">View All</a>
+            </div>
+            
+            <div class="space-y-4">
+                {% for item in wishlist_items %}
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <div>
+                        <h3 class="font-semibold">{{ item.product.title }}</h3>
+                        <p class="text-sm text-gray-600 capitalize">{{ item.product.category }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-primary">${{ item.product.price }}</p>
+                        <a href="{% url 'products:detail' item.product.pk %}" class="text-sm text-primary hover:text-purple-700">View</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-center py-4">No items in wishlist yet.</p>
+                <div class="text-center">
+                    <a href="{% url 'products:list' %}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                        Browse Products
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <a href="{% url 'outfits:builder' %}" class="bg-primary text-white p-4 rounded-lg text-center hover:bg-purple-700 transition">
+                <i class="fas fa-plus text-2xl mb-2"></i>
+                <p>Create Outfit</p>
+            </a>
+            <a href="{% url 'products:list' %}" class="bg-secondary text-white p-4 rounded-lg text-center hover:bg-yellow-600 transition">
+                <i class="fas fa-search text-2xl mb-2"></i>
+                <p>Browse Products</p>
+            </a>
+            <a href="{% url 'accounts:profile_edit' %}" class="bg-accent text-white p-4 rounded-lg text-center hover:bg-green-600 transition">
+                <i class="fas fa-user-edit text-2xl mb-2"></i>
+                <p>Update Profile</p>
+            </a>
+            <a href="{% url 'core:wishlist' %}" class="bg-pink-500 text-white p-4 rounded-lg text-center hover:bg-pink-600 transition">
+                <i class="fas fa-heart text-2xl mb-2"></i>
+                <p>My Wishlist</p>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+
+{% block title %}Virtual Try-On - FashionFit{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Virtual Try-On Studio</h1>
+            <p class="text-gray-600">See how you look in our latest fashion!</p>
+        </div>
+
+        <!-- Available Products Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-tshirt text-primary mr-2"></i>
+                Available Products
+            </h2>
+            
+            <!-- Products Grid with Images -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+                {% for product in products %}
+                <div class="product-item bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-primary hover:text-white transition-all duration-300" 
+                     onclick="selectProduct({{ product.id }}, '{{ product.title }}', '{{ product.image.url|default:'' }}')">
+                    
+                    <!-- Product Image -->
+                    <div class="aspect-w-3 aspect-h-4 mb-3">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" 
+                                 alt="{{ product.title }}" 
+                                 class="w-full h-32 object-cover rounded-md">
+                        {% else %}
+                            <div class="w-full h-32 bg-gray-200 rounded-md flex items-center justify-center">
+                                <i class="fas fa-image text-gray-400 text-2xl"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Product Info -->
+                    <div class="text-center">
+                        <h3 class="font-medium text-sm mb-1">{{ product.title }}</h3>
+                        <p class="text-xs text-gray-500">${{ product.price }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Selected Product Display -->
+            <div id="selectedProduct" class="hidden bg-primary text-white p-4 rounded-lg">
+                <div class="flex items-center">
+                    <img id="selectedProductImage" src="" alt="" class="w-16 h-16 object-cover rounded-md mr-4">
+                    <div>
+                        <h3 class="font-semibold">Selected Product:</h3>
+                        <p id="selectedProductName" class="text-sm"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Camera/Upload Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-camera text-primary mr-2"></i>
+                Your Photo
+            </h2>
+            
+            <!-- Camera and Upload Options -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Camera Section -->
+                <div class="text-center">
+                    <div id="camera-container" class="bg-gray-100 rounded-lg p-4 mb-4">
+                        <video id="camera" class="w-full h-64 object-cover rounded-lg hidden"></video>
+                        <canvas id="canvas" class="w-full h-64 object-cover rounded-lg hidden"></canvas>
+                        <div id="camera-placeholder" class="w-full h-64 flex items-center justify-center bg-gray-200 rounded-lg">
+                            <div class="text-center">
+                                <i class="fas fa-camera text-gray-400 text-4xl mb-2"></i>
+                                <p class="text-gray-500">Click to use camera</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="start-camera" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition mr-2">
+                        <i class="fas fa-camera mr-2"></i>Start Camera
+                    </button>
+                    <button id="capture-photo" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition hidden">
+                        <i class="fas fa-camera-retro mr-2"></i>Capture
+                    </button>
+                </div>
+
+                <!-- Upload Section -->
+                <div class="text-center">
+                    <div id="upload-preview" class="bg-gray-100 rounded-lg p-4 mb-4">
+                        <div id="upload-placeholder" class="w-full h-64 flex items-center justify-center bg-gray-200 rounded-lg">
+                            <div class="text-center">
+                                <i class="fas fa-upload text-gray-400 text-4xl mb-2"></i>
+                                <p class="text-gray-500">Upload your photo</p>
+                            </div>
+                        </div>
+                        <img id="uploaded-image" class="w-full h-64 object-cover rounded-lg hidden" alt="Uploaded photo">
+                    </div>
+                    <input type="file" id="photo-upload" accept="image/*" class="hidden">
+                    <button onclick="document.getElementById('photo-upload').click()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-upload mr-2"></i>Upload Photo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Try-On Button -->
+        <div class="text-center mb-8">
+            <button id="try-on-btn" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <i class="fas fa-magic mr-2"></i>Apply Virtual Try-On
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="bg-white rounded-lg shadow-md p-6 hidden">
+            <h2 class="text-2xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-image text-primary mr-2"></i>
+                Try-On Result
+            </h2>
+            <div class="text-center">
+                <img id="result-image" class="max-w-full h-auto rounded-lg shadow-md mx-auto" alt="Try-on result">
+                <div class="mt-4">
+                    <button class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition mr-2">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </button>
+                    <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-share mr-2"></i>Share
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let selectedProductId = null;
+let selectedProductImage = null;
+let userImage = null;
+let stream = null;
+
+// Product selection function
+function selectProduct(productId, productName, productImageUrl) {
+    selectedProductId = productId;
+    selectedProductImage = productImageUrl;
+    
+    // Update selected product display
+    document.getElementById('selectedProductName').textContent = productName;
+    document.getElementById('selectedProductImage').src = productImageUrl;
+    document.getElementById('selectedProduct').classList.remove('hidden');
+    
+    // Highlight selected product
+    document.querySelectorAll('.product-item').forEach(item => {
+        item.classList.remove('bg-primary', 'text-white');
+        item.classList.add('bg-gray-50');
+    });
+    event.currentTarget.classList.remove('bg-gray-50');
+    event.currentTarget.classList.add('bg-primary', 'text-white');
+    
+    // Enable try-on button if user image is available
+    checkTryOnReadiness();
+}
+
+// Camera functionality
+document.getElementById('start-camera').addEventListener('click', async function() {
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const video = document.getElementById('camera');
+        video.srcObject = stream;
+        video.play();
+        
+        document.getElementById('camera-placeholder').classList.add('hidden');
+        document.getElementById('camera').classList.remove('hidden');
+        document.getElementById('capture-photo').classList.remove('hidden');
+        this.textContent = 'Stop Camera';
+        this.onclick = stopCamera;
+    } catch (err) {
+        alert('Error accessing camera: ' + err.message);
+    }
+});
+
+function stopCamera() {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        document.getElementById('camera').classList.add('hidden');
+        document.getElementById('camera-placeholder').classList.remove('hidden');
+        document.getElementById('capture-photo').classList.add('hidden');
+        document.getElementById('start-camera').textContent = 'Start Camera';
+        document.getElementById('start-camera').onclick = null;
+    }
+}
+
+// Photo capture
+document.getElementById('capture-photo').addEventListener('click', function() {
+    const video = document.getElementById('camera');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0);
+    
+    userImage = canvas.toDataURL('image/jpeg');
+    
+    // Show captured image
+    canvas.classList.remove('hidden');
+    video.classList.add('hidden');
+    
+    checkTryOnReadiness();
+    stopCamera();
+});
+
+// File upload
+document.getElementById('photo-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            userImage = e.target.result;
+            document.getElementById('uploaded-image').src = userImage;
+            document.getElementById('upload-placeholder').classList.add('hidden');
+            document.getElementById('uploaded-image').classList.remove('hidden');
+            checkTryOnReadiness();
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Check if ready for try-on
+function checkTryOnReadiness() {
+    const tryOnBtn = document.getElementById('try-on-btn');
+    if (selectedProductId && userImage) {
+        tryOnBtn.disabled = false;
+    } else {
+        tryOnBtn.disabled = true;
+    }
+}
+
+// Virtual try-on functionality
+document.getElementById('try-on-btn').addEventListener('click', async function() {
+    if (!selectedProductId || !userImage) {
+        alert('Please select a product and provide your photo');
+        return;
+    }
+    
+    this.disabled = true;
+    this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+    
+    try {
+        const response = await fetch('{% url "core:virtual_tryon_api" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                product_id: selectedProductId,
+                user_image: userImage
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            document.getElementById('result-image').src = 'data:image/jpeg;base64,' + data.result_image;
+            document.getElementById('results-section').classList.remove('hidden');
+            document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
+        } else {
+            alert('Error: ' + data.message);
+        }
+    } catch (error) {
+        alert('An error occurred: ' + error.message);
+    } finally {
+        this.disabled = false;
+        this.innerHTML = '<i class="fas fa-magic mr-2"></i>Apply Virtual Try-On';
+    }
+});
+</script>
+{% endblock %}

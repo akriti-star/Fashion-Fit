@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ outfit.name }} - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold mb-2">{{ outfit.name }}</h1>
+            <p class="text-gray-600">{{ outfit.description }}</p>
+        </div>
+        <div class="flex space-x-2">
+            <a href="{% url 'outfits:edit' outfit.pk %}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                <i class="fas fa-edit mr-2"></i>Edit
+            </a>
+            <a href="{% url 'outfits:delete' outfit.pk %}" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition" onclick="return confirm('Are you sure you want to delete this outfit?')">
+                <i class="fas fa-trash mr-2"></i>Delete
+            </a>
+        </div>
+    </div>
+
+    <!-- Outfit Overview -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <div class="text-2xl font-bold text-primary">{{ outfit.products.count }}</div>
+                <div class="text-gray-600">Items</div>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-green-600">${{ outfit.get_total_price }}</div>
+                <div class="text-gray-600">Total Value</div>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl font-bold text-blue-600">{{ outfit.created_at|date:"M d, Y" }}</div>
+                <div class="text-gray-600">Created</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Outfit Items -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-6">Outfit Items</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for product in outfit.products.all %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                <div class="aspect-w-3 aspect-h-4">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-image text-gray-400 text-3xl"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-2">{{ product.title }}</h3>
+                    <p class="text-gray-600 text-sm mb-2 capitalize">{{ product.category }}</p>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-lg font-bold text-primary">${{ product.price }}</span>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-star text-yellow-400 mr-1"></i>
+                            <span>{{ product.get_average_rating|floatformat:1 }}</span>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <a href="{% url 'products:detail' product.pk %}" class="flex-1 bg-primary text-white px-3 py-2 rounded text-center text-sm hover:bg-purple-700 transition">
+                            View
+                        </a>
+                        <a href="{% url 'core:try_on' product.pk %}" class="bg-pink-500 text-white px-3 py-2 rounded text-sm hover:bg-pink-600 transition">
+                            Try On
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <i class="fas fa-tshirt text-gray-400 text-6xl mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-600 mb-2">No items in this outfit</h3>
+                <p class="text-gray-500 mb-6">Add some products to complete your outfit!</p>
+                <a href="{% url 'outfits:edit' outfit.pk %}" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition">
+                    <i class="fas fa-plus mr-2"></i>Add Items
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Style Suggestions -->
+    {% if outfit.products.exists %}
+    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Style Tips</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="font-semibold mb-2 text-purple-800">Occasion</h3>
+                <p class="text-purple-700">
+                    {% if 'dress' in outfit.get_categories %}
+                        Perfect for formal events, date nights, or special occasions.
+                    {% elif 'jeans' in outfit.get_categories and 'tops' in outfit.get_categories %}
+                        Great for casual outings, everyday wear, or weekend activities.
+                    {% elif 'activewear' in outfit.get_categories %}
+                        Ideal for workouts, sports activities, or athleisure looks.
+                    {% else %}
+                        Versatile outfit suitable for various occasions.
+                    {% endif %}
+                </p>
+            </div>
+            <div>
+                <h3 class="font-semibold mb-2 text-purple-800">Styling Tips</h3>
+                <ul class="text-purple-700 space-y-1">
+                    <li>• Consider the season and weather when wearing this outfit</li>
+                    <li>• Mix textures and patterns for visual interest</li>
+                    <li>• Add accessories to personalize your look</li>
+                    <li>• Ensure proper fit for the most flattering silhouette</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Similar Outfits -->
+    {% if similar_outfits %}
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-6">Similar Outfits</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for similar_outfit in similar_outfits %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                <div class="h-32 bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
+                    {% if similar_outfit.products.exists %}
+                        <div class="grid grid-cols-2 gap-1 p-2">
+                            {% for product in similar_outfit.products.all|slice:":4" %}
+                            <div class="w-12 h-12 bg-white rounded shadow-sm flex items-center justify-center">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-full h-full object-cover rounded">
+                                {% else %}
+                                    <i class="fas fa-tshirt text-gray-400 text-xs"></i>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <i class="fas fa-tshirt text-gray-400 text-2xl"></i>
+                    {% endif %}
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-2">{{ similar_outfit.name }}</h3>
+                    <p class="text-gray-600 text-sm mb-3">{{ similar_outfit.description|truncatewords:10 }}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">{{ similar_outfit.products.count }} items</span>
+                        <a href="{% url 'outfits:detail' similar_outfit.pk %}" class="bg-primary text-white px-3 py-1 rounded text-sm hover:bg-purple-700 transition">
+                            View
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

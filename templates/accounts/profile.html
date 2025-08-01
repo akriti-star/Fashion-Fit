@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold">My Profile</h2>
+            <a href="{% url 'accounts:profile_edit' %}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                Edit Profile
+            </a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Personal Information -->
+            <div>
+                <h3 class="text-xl font-semibold mb-4">Personal Information</h3>
+                <div class="space-y-3">
+                    <div>
+                        <span class="font-semibold">Username:</span>
+                        <span class="ml-2">{{ user_profile.username }}</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold">Name:</span>
+                        <span class="ml-2">{{ user_profile.first_name }} {{ user_profile.last_name }}</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold">Email:</span>
+                        <span class="ml-2">{{ user_profile.email }}</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold">Gender:</span>
+                        <span class="ml-2">{{ user_profile.get_gender_display|default:"Not specified" }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Body Measurements -->
+            <div>
+                <h3 class="text-xl font-semibold mb-4">Body Measurements</h3>
+                <div class="space-y-3">
+                    <div>
+                        <span class="font-semibold">Height:</span>
+                        <span class="ml-2">{{ user_profile.height_cm|default:"Not specified" }}{% if user_profile.height_cm %} cm{% endif %}</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold">Weight:</span>
+                        <span class="ml-2">{{ user_profile.weight_kg|default:"Not specified" }}{% if user_profile.weight_kg %} kg{% endif %}</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold">Body Type:</span>
+                        <span class="ml-2">{{ user_profile.get_body_type_display|default:"Not specified" }}</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold">Chest:</span>
+                        <span class="ml-2">{{ user_profile.chest_cm|default:"Not specified" }}{% if user_profile.chest_cm %} cm{% endif %}</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold">Waist:</span>
+                        <span class="ml-2">{{ user_profile.waist_cm|default:"Not specified" }}{% if user_profile.waist_cm %} cm{% endif %}</span>
+                    </div>
+                    <div>
+                        <span class="font-semibold">Hips:</span>
+                        <span class="ml-2">{{ user_profile.hips_cm|default:"Not specified" }}{% if user_profile.hips_cm %} cm{% endif %}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Size Recommendation -->
+        {% if user_profile.get_recommended_size %}
+        <div class="mt-8 bg-accent bg-opacity-10 rounded-lg p-6">
+            <h3 class="text-xl font-semibold mb-2 text-accent">Your Recommended Size</h3>
+            <p class="text-2xl font-bold text-accent">{{ user_profile.get_recommended_size }}</p>
+            <p class="text-sm text-gray-600 mt-2">Based on your body measurements</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

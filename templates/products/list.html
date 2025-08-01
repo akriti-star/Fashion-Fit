@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-4">
+            {% if category %}
+                {{ category|title }} Products
+            {% else %}
+                All Products
+            {% endif %}
+        </h1>
+        <p class="text-gray-600">Discover your perfect fit with smart sizing</p>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h3 class="font-semibold mb-4">Categories</h3>
+        <div class="flex flex-wrap gap-2">
+            <a href="{% url 'products:list' %}" class="px-4 py-2 rounded-lg {% if not category %}bg-primary text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %} transition">
+                All
+            </a>
+            {% for cat_key, cat_name in categories %}
+            <a href="{% url 'products:category' cat_key %}" class="px-4 py-2 rounded-lg {% if category == cat_key %}bg-primary text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %} transition">
+                {{ cat_name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for product in products %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+            <div class="aspect-w-3 aspect-h-4">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-full h-64 object-cover">
+                {% else %}
+                    <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-image text-gray-400 text-4xl"></i>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="p-4">
+                <h3 class="font-semibold text-lg mb-2">{{ product.title }}</h3>
+                <p class="text-gray-600 text-sm mb-2 capitalize">{{ product.category }}</p>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-2xl font-bold text-primary">${{ product.price }}</span>
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                        <span>{{ product.get_average_rating|floatformat:1 }}</span>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex space-x-2">
+                        <a href="{% url 'products:detail' product.pk %}" class="flex-1 bg-myntra-dark text-white px-4 py-2 rounded-sm text-center hover:bg-gray-800 transition-colors duration-300">
+                            View Details
+                        </a>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'core:add_to_wishlist' product.pk %}" class="bg-gray-200 text-myntra-dark px-3 py-2 rounded-sm hover:bg-gray-300 transition-colors duration-300">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Virtual Try-On Button -->
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'core:try_on' product.pk %}" class="block w-full bg-myntra-pink text-white px-4 py-2 rounded-sm text-center font-semibold hover:bg-myntra-pink-dark transition-colors duration-300">
+                        <i class="fas fa-camera mr-1"></i>Try On
+                    </a>
+                    {% else %}
+                    <a href="{% url 'accounts:login' %}?next={% url 'core:try_on' product.pk %}" class="block w-full bg-myntra-pink text-white px-4 py-2 rounded-sm text-center font-semibold hover:bg-myntra-pink-dark transition-colors duration-300">
+                        <i class="fas fa-sign-in-alt mr-1"></i>Login to Try On
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-12">
+            <i class="fas fa-shopping-bag text-gray-400 text-6xl mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">No products found</h3>
+            <p class="text-gray-500">Check back later for new arrivals</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="mt-8 flex justify-center">
+        <nav class="flex items-center space-x-2">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">
+                    Previous
+                </a>
+            {% endif %}
+            
+            <span class="px-3 py-2">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300">
+                    Next
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

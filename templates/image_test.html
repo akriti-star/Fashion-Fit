@@ -1,0 +1,39 @@
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Image Test</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body>
+    <h1>Summer Dress Image Test</h1>
+    <p>Database Info:</p>
+    <ul>
+        <li>Product Title: {{ summer_dress.title }}</li>
+        <li>Image Field: {{ summer_dress.image }}</li>
+        <li>Image URL: {{ summer_dress.image.url }}</li>
+    </ul>
+    
+    <p>Template Test:</p>
+    {% if summer_dress.image %}
+        <img src="{{ summer_dress.image.url }}?v={{ timestamp }}" alt="{{ summer_dress.title }}" style="max-width: 300px; border: 2px solid red;">
+        <p>Image should be displayed above</p>
+    {% else %}
+        <p>No image found in database</p>
+    {% endif %}
+    
+    <p>Direct image links:</p>
+    <a href="/media/products/summer_dress.jpg?v={{ timestamp }}">Original Image Link</a><br>
+    <a href="/media/products/summer_dress_new.jpg?v={{ timestamp }}">New Image Link</a>
+    
+    <script>
+        // Force reload images every 5 seconds for testing
+        setTimeout(function() {
+            location.reload();
+        }, 5000);
+    </script>
+</body>
+</html>
+</body>
+</html> {% endcomment %}

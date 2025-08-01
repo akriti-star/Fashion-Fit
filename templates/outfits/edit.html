@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Outfit - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-2">Edit Outfit</h1>
+        <p class="text-gray-600">Update your outfit details and product selection</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Outfit Form -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Outfit Details</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="id_name" class="block text-sm font-medium text-gray-700 mb-2">Outfit Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <label class="flex items-center">
+                        {{ form.is_public }}
+                        <span class="ml-2 text-sm text-gray-700">Make this outfit public</span>
+                    </label>
+                    {% if form.is_public.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.is_public.errors }}</div>
+                    {% endif %}
+                    <p class="text-xs text-gray-500 mt-1">Public outfits can be seen by other users</p>
+                </div>
+
+                <div class="mb-6">
+                    <label for="id_products" class="block text-sm font-medium text-gray-700 mb-2">Select Products</label>
+                    {{ form.products }}
+                    {% if form.products.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.products.errors }}</div>
+                    {% endif %}
+                    <p class="text-sm text-gray-500 mt-1">Hold Ctrl (or Cmd) to select multiple products</p>
+                </div>
+
+                <div class="flex space-x-4">
+                    <button type="submit" class="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-save mr-2"></i>Update Outfit
+                    </button>
+                    <a href="{% url 'outfits:detail' outfit.pk %}" class="flex-1 bg-gray-500 text-white py-2 px-4 rounded-lg text-center hover:bg-gray-600 transition">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Current Outfit Preview -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Current Outfit Preview</h2>
+            
+            <div class="mb-4">
+                <h3 class="font-semibold text-lg">{{ outfit.name }}</h3>
+                <p class="text-gray-600 text-sm">Created {{ outfit.created_at|date:"F d, Y" }}</p>
+                <p class="text-gray-600 text-sm">
+                    {% if outfit.is_public %}
+                        <i class="fas fa-globe text-green-500 mr-1"></i>Public
+                    {% else %}
+                        <i class="fas fa-lock text-gray-500 mr-1"></i>Private
+                    {% endif %}
+                </p>
+            </div>
+
+            {% if outfit.products.exists %}
+                <div class="space-y-3">
+                    <h4 class="font-medium text-gray-700">Current Items ({{ outfit.products.count }}):</h4>
+                    {% for product in outfit.products.all %}
+                        <div class="flex items-center space-x-3 p-2 bg-gray-50 rounded">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-12 h-12 object-cover rounded">
+                            {% else %}
+                                <div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                                    <i class="fas fa-image text-gray-400"></i>
+                                </div>
+                            {% endif %}
+                            <div class="flex-1">
+                                <p class="font-medium text-sm">{{ product.title }}</p>
+                                <p class="text-gray-600 text-xs capitalize">{{ product.category }}</p>
+                            </div>
+                            <p class="font-semibold text-primary">${{ product.price }}</p>
+                        </div>
+                    {% endfor %}
+                    
+                    <div class="border-t pt-3">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold">Total:</span>
+                            <span class="font-bold text-lg text-primary">${{ outfit.get_total_price }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-tshirt text-gray-400 text-4xl mb-3"></i>
+                    <p class="text-gray-600">No items in this outfit</p>
+                    <p class="text-gray-500 text-sm">Select products from the form to add them</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

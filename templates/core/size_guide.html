@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Size Guide - FashionFit{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Size Guide</h1>
+        
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">How to Measure</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <i class="fas fa-arrows-alt-v text-primary text-3xl mb-2"></i>
+                    <h3 class="font-semibold mb-2">Height</h3>
+                    <p class="text-sm text-gray-600">Stand straight against a wall and measure from top of head to floor.</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-circle text-primary text-3xl mb-2"></i>
+                    <h3 class="font-semibold mb-2">Chest</h3>
+                    <p class="text-sm text-gray-600">Measure around the fullest part of your chest, under the arms.</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-minus text-primary text-3xl mb-2"></i>
+                    <h3 class="font-semibold mb-2">Waist</h3>
+                    <p class="text-sm text-gray-600">Measure around the narrowest part of your waist.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Size Charts</h2>
+            
+            {% if size_charts %}
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2 text-left">Size</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Chest (cm)</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Waist (cm)</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Recommended Height (cm)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for size in size_charts %}
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2 font-semibold">{{ size.label }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ size.chest_min }} - {{ size.chest_max }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ size.waist_min }} - {{ size.waist_max }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ size.recommended_height }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-8">No size charts available.</p>
+            {% endif %}
+        </div>
+
+        <div class="bg-blue-50 rounded-lg p-6">
+            <h3 class="text-lg font-semibold mb-3">
+                <i class="fas fa-lightbulb text-blue-500 mr-2"></i>Pro Tips
+            </h3>
+            <ul class="space-y-2 text-gray-700">
+                <li class="flex items-start">
+                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                    <span>Update your measurements in your profile for personalized size recommendations</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                    <span>When in doubt, check our product reviews for fit feedback from other customers</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                    <span>Different brands may have slight variations in sizing</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                    <span>Consider your body type when selecting sizes - our system accounts for this</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="mt-8 text-center">
+            {% if user.is_authenticated %}
+                <a href="{% url 'accounts:profile_edit' %}" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition">
+                    <i class="fas fa-user-edit mr-2"></i>Update My Measurements
+                </a>
+            {% else %}
+                <a href="{% url 'accounts:register' %}" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition">
+                    <i class="fas fa-user-plus mr-2"></i>Create Account for Personalized Sizing
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
